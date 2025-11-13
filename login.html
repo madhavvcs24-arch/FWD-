@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Alumni Connect</title>
+
+  <!-- Google Fonts + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1A2238, #222B50);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .site-logo {
+      color: #FFFFFF;
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-logo i {
+      color: #6366F1;
+      font-size: 1.8rem;
+    }
+
+    .login-container {
+      text-align: center;
+      background: rgba(32, 43, 85, 0.6);
+      padding: 60px 80px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      max-width: 480px;
+      width: 90%;
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: white;
+      background-color: #6366F1;
+      border: none;
+      padding: 18px 30px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+      text-decoration: none;
+    }
+
+    .btn i {
+      margin-right: 10px;
+      font-size: 1.4rem;
+    }
+
+    .btn:hover {
+      background-color: #4F46E5;
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-width: 600px) {
+      .login-container {
+        padding: 50px 25px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .btn {
+        font-size: 1.1rem;
+        padding: 15px 25px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" class="site-logo">
+      <i class="fa-solid fa-graduation-cap"></i> Alumni Connect
+    </a>
+  </header>
+
+  <div class="login-container">
+    <h1>Login as</h1>
+
+    <div class="btn-container">
+      <a href="student-login.html" class="btn"><i class="fa-solid fa-user-graduate"></i> Student</a>
+      <a href="admin.html" class="btn"><i class="fa-solid fa-user-tie"></i> Admin</a>
+    </div>
+  </div>
+</body>
+</html>

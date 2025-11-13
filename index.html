@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Placement Connect</title>
+
+    <!-- Google Fonts (Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- 1. Global & Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFFFFF;
+            color: #E0E0E0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+       
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- 2. Header --- */
+        .site-header {
+            background-color: #1A2238;
+            padding: 15px 0;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       
+        .site-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            animation: fadeIn 0.6s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+       
+        .site-logo i {
+            font-size: 1.6rem;
+            color: #6366F1;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+       
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.6s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #FFFFFF;
+        }
+       
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #6366F1;
+            color: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+       
+        .btn-primary:hover {
+            background-color: #4F46E5;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* --- 3. Hero Section --- */
+        .hero-section {
+            background-color: #1A2238;
+            padding: 100px 0 120px 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-tagline {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            animation: fadeInSlideUp 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+       
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #CBD5E1;
+            max-width: 650px;
+            margin: 0 auto 50px auto;
+            animation: fadeInSlideUp 0.8s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        /* --- 4. Stats Section --- */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 60px;
+            animation: fadeInSlideUp 0.8s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+       
+        .stat-item {
+            text-align: center;
+        }
+       
+        .stat-item .number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            min-width: 50px;
+            display: inline-block;
+        }
+       
+        .stat-item .label {
+            font-size: 1rem;
+            color: #94A3B8;
+        }
+
+        /* --- 5. Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =======================
+         Header
+    ======================== -->
+    <header class="site-header">
+        <div class="container header-container">
+           
+            <a href="index.html" class="site-logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Alumni Connect</span>
+            </a>
+           
+            <nav class="main-nav">
+                <!-- Navigation items can go here -->
+            </nav>
+
+            <div class="header-actions">
+                <a href="login.html" class="btn btn-secondary">Log in</a>
+                <a href="signup.html" class="btn btn-primary">Sign up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- =======================
+         Hero Section
+    ======================== -->
+    <section class="hero-section">
+        <div class="container hero-content">
+           
+            <h1 class="hero-tagline">
+                Connect with Alumni, Discover Your Future
+            </h1>
+            <p class="hero-subtitle">
+                Become part of a thriving community of students and alumni, exploring
+                career paths and improving your skills every day.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="number" id="stats-alumni" data-target="0">0</span>+
+                    <span class="label">Alumni</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number" id="stats-companies" data-target="0">0</span>+
+                    <span class="label">Companies</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number" id="stats-package" data-target="0">0</span> LPA
+                    <span class="label">Highest Package</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =======================
+         Scripts
+    ======================== -->
+    <script>
+        // --- 1. Mock data fetch (simulated backend call) ---
+        function mockFetchStats() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const data = { alumni: 1800, companies: 140, package: 35 };
+                    resolve(data);
+                }, 1000);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const speed = 200;
+
+            const animateCount = (counter) => {
+                const target = +counter.getAttribute('data-target');
+                const updateCount = () => {
+                    const count = +counter.innerText;
+                    const increment = target / speed;
+
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 10);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCount();
+            };
+           
+            async function initializeStats() {
+                const statsAlumni = document.getElementById('stats-alumni');
+                const statsCompanies = document.getElementById('stats-companies');
+                const statsPackage = document.getElementById('stats-package');
+
+                statsAlumni.innerText = '...';
+                statsCompanies.innerText = '...';
+                statsPackage.innerText = '...';
+
+                const data = await mockFetchStats();
+
+                statsAlumni.setAttribute('data-target', data.alumni);
+                statsCompanies.setAttribute('data-target', data.companies);
+                statsPackage.setAttribute('data-target', data.package);
+
+                statsAlumni.innerText = '0';
+                statsCompanies.innerText = '0';
+                statsPackage.innerText = '0';
+
+                const counters = [statsAlumni, statsCompanies, statsPackage];
+                const counterObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animateCount(entry.target);
+                            counterObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                counters.forEach(counter => {
+                    counterObserver.observe(counter);
+                });
+            }
+
+            initializeStats();
+        });
+    </script>
+
+</body>
+</html>
