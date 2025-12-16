@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Login | Alumni Connect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -11,8 +11,8 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      height: 100vh;
       display: flex;
+      height: 100vh;
     }
 
     .left {
@@ -26,52 +26,47 @@
       padding: 40px;
     }
 
-    .left img {
-      width: 80%;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
     .right {
       width: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #fff;
     }
 
-    .box {
-      width: 360px;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      width: 350px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
       text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #1e3a8a;
     }
 
     button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
+      background: #2563eb;
+      color: white;
       border: none;
       border-radius: 10px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      background: #2563eb;
-      color: white;
     }
 
     button:hover {
       background: #1e40af;
     }
 
-    @media(max-width:900px){
-      .left { display:none; }
-      .right { width:100%; }
+    .error {
+      color: red;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    @media(max-width: 900px) {
+      .left { display: none; }
+      .right { width: 100%; }
     }
   </style>
 </head>
@@ -79,29 +74,27 @@
 <body>
 
   <div class="left">
-    <img src="https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&w=800">
     <h1>Welcome Back, Student!</h1>
     <p>Login using your college Google account</p>
   </div>
 
   <div class="right">
-    <div class="box">
+    <div class="card">
       <h2>Student Login</h2>
-      <button id="googleLogin">Login with Google</button>
+      <button onclick="loginWithGoogle()">Login with Google</button>
+      <div id="error" class="error"></div>
     </div>
   </div>
 
-  <!-- 🔥 FIREBASE AUTH -->
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
       authDomain: "fwd-a5a74.firebaseapp.com",
       projectId: "fwd-a5a74",
-      storageBucket: "fwd-a5a74.appspot.com",
-      messagingSenderId: "611520933176",
       appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
     };
 
@@ -109,16 +102,29 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    document.getElementById("googleLogin").addEventListener("click", () => {
-      signInWithPopup(auth, provider)
-        .then(() => {
-          // SUCCESS
-          window.location.href = "./dashboard.html";
-        })
-        .catch((error) => {
-          alert("Login failed: " + error.message);
-        });
-    });
+    window.loginWithGoogle = async () => {
+      const errorBox = document.getElementById("error");
+      errorBox.innerText = "";
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const email = result.user.email;
+
+        // 🔐 DOMAIN RESTRICTION
+        if (!email.endsWith("@bmsce.ac.in")) {
+          await auth.signOut();
+          errorBox.innerText = "Only @bmsce.ac.in email IDs are allowed";
+          return;
+        }
+
+        // ✅ SUCCESS
+        window.location.href = "./dashboard.html";
+
+      } catch (error) {
+        errorBox.innerText = "Login failed. Please try again.";
+        console.error(error);
+      }
+    };
   </script>
 
 </body>
