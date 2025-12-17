@@ -55,7 +55,6 @@
       margin-bottom: 15px;
       border: 1px solid #d1d5db;
       border-radius: 10px;
-      font-size: 1rem;
     }
 
     button {
@@ -65,56 +64,44 @@
       border-radius: 10px;
       background: #2563eb;
       color: white;
-      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 5px;
     }
 
-    button:hover { background: #1e40af; }
+    button:hover {
+      background: #1e40af;
+    }
 
     .google-btn {
       background: #4285f4;
+      margin-top: 10px;
     }
 
     .google-btn:hover {
-      background: #3367d6;
+      background: #3c78d8;
     }
 
     .divider {
       margin: 20px 0;
-      display: flex;
-      align-items: center;
       color: #9ca3af;
     }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .divider::before { margin-right: .5em; }
-    .divider::after { margin-left: .5em; }
 
     .link {
       margin-top: 12px;
       font-size: 0.9rem;
     }
 
-    .link span, .link a {
+    .link a, .link span {
       color: #2563eb;
-      cursor: pointer;
       font-weight: 600;
+      cursor: pointer;
       text-decoration: none;
     }
 
     #error-message {
       color: #ef4444;
-      margin-bottom: 10px;
       display: none;
-      font-weight: 500;
+      margin-bottom: 10px;
     }
 
     @media(max-width:900px) {
@@ -126,141 +113,114 @@
 
 <body>
 
-  <div class="left">
-    <img src="https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&w=800">
-    <h1>Welcome Back, Student!</h1>
-    <p>Login using your college Google account</p>
-  </div>
+<div class="left">
+  <img src="https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg">
+  <h1>Welcome Back, Student!</h1>
+  <p>Login using your college account</p>
+</div>
 
-  <div class="right">
-    <div class="card">
-      <h2>Student Login</h2>
+<div class="right">
+  <div class="card">
+    <h2>Student Login</h2>
 
-      <div id="error-message"></div>
+    <div id="error-message"></div>
 
-      <!-- Email/Password Login -->
-      <form id="loginForm">
-        <input type="email" id="email" placeholder="College Email" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit">Sign In</button>
-      </form>
+    <!-- EMAIL / PASSWORD LOGIN -->
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="College Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Sign In</button>
+    </form>
 
-      <div class="divider">OR</div>
+    <div class="divider">OR</div>
 
-      <!-- Google Login -->
-      <button class="google-btn" onclick="googleLogin()">Login with Google</button>
+    <!-- GOOGLE LOGIN -->
+    <button class="google-btn" onclick="googleLogin()">Login with Google</button>
 
-      <div class="link">
-        <span onclick="resetPassword()">Forgot Password?</span>
-      </div>
+    <!-- SIGN UP KEPT -->
+    <div class="link">
+      Don't have an account? <a href="signup.html">Sign Up</a>
     </div>
   </div>
+</div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🔥 Firebase config (YOUR PROJECT)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-      authDomain: "fwd-a5a74.firebaseapp.com",
-      projectId: "fwd-a5a74",
-      storageBucket: "fwd-a5a74.appspot.com",
-      messagingSenderId: "611520933176",
-      appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+    authDomain: "fwd-a5a74.firebaseapp.com",
+    projectId: "fwd-a5a74",
+    storageBucket: "fwd-a5a74.appspot.com",
+    messagingSenderId: "611520933176",
+    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
-    const allowedDomain = "@bmsce.ac.in";
-    const errorEl = document.getElementById("error-message");
+  const domain = "@bmsce.ac.in";
+  const errorEl = document.getElementById("error-message");
 
-    function showError(msg) {
-      errorEl.innerText = msg;
-      errorEl.style.display = "block";
+  function showError(msg) {
+    errorEl.innerText = msg;
+    errorEl.style.display = "block";
+  }
+
+  // GOOGLE LOGIN
+  window.googleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      if (!user.email.endsWith(domain)) {
+        showError("Only BMSCE email allowed");
+        await auth.signOut();
+        return;
+      }
+
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        lastLogin: serverTimestamp()
+      }, { merge: true });
+
+      window.location.href = "./dashboard.html";
+    } catch (err) {
+      showError("Google login failed");
+    }
+  };
+
+  // EMAIL / PASSWORD LOGIN
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorEl.style.display = "none";
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email.endsWith(domain)) {
+      showError("Only BMSCE email allowed");
+      return;
     }
 
-    // ✅ GOOGLE LOGIN
-    window.googleLogin = async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+    try {
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", res.user.uid), {
+        lastLogin: serverTimestamp()
+      }, { merge: true });
 
-        if (!user.email.endsWith(allowedDomain)) {
-          await auth.signOut();
-          showError("Only @bmsce.ac.in accounts are allowed.");
-          return;
-        }
-
-        await setDoc(doc(db, "users", user.uid), {
-          name: user.displayName,
-          email: user.email,
-          photo: user.photoURL,
-          lastLogin: serverTimestamp()
-        }, { merge: true });
-
-        window.location.href = "./dashboard.html";
-
-      } catch (err) {
-        showError(err.message);
-      }
-    };
-
-    // ✅ EMAIL/PASSWORD LOGIN
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      errorEl.style.display = "none";
-
-      const email = email.value.trim();
-      const password = password.value;
-
-      if (!email.endsWith(allowedDomain)) {
-        showError("Only @bmsce.ac.in emails allowed.");
-        return;
-      }
-
-      try {
-        const result = await signInWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", result.user.uid), {
-          email: result.user.email,
-          lastLogin: serverTimestamp()
-        }, { merge: true });
-
-        window.location.href = "./dashboard.html";
-
-      } catch (err) {
-        showError("Invalid email or password.");
-      }
-    });
-
-    // ✅ RESET PASSWORD
-    window.resetPassword = async () => {
-      const email = prompt("Enter your college email:");
-      if (!email || !email.endsWith(allowedDomain)) {
-        alert("Use your @bmsce.ac.in email only");
-        return;
-      }
-      await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent!");
-    };
-  </script>
+      window.location.href = "./dashboard.html";
+    } catch {
+      showError("Invalid email or password");
+    }
+  });
+</script>
 
 </body>
 </html>
