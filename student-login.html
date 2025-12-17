@@ -49,6 +49,15 @@
       width: 360px;
     }
 
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
     button {
       width: 100%;
       padding: 14px;
@@ -59,10 +68,53 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
+      margin-top: 5px;
     }
 
-    button:hover {
-      background: #1e40af;
+    button:hover { background: #1e40af; }
+
+    .google-btn {
+      background: #4285f4;
+    }
+
+    .google-btn:hover {
+      background: #3367d6;
+    }
+
+    .divider {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      color: #9ca3af;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .divider::before { margin-right: .5em; }
+    .divider::after { margin-left: .5em; }
+
+    .link {
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+
+    .link span, .link a {
+      color: #2563eb;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    #error-message {
+      color: #ef4444;
+      margin-bottom: 10px;
+      display: none;
+      font-weight: 500;
     }
 
     @media(max-width:900px) {
@@ -83,16 +135,45 @@
   <div class="right">
     <div class="card">
       <h2>Student Login</h2>
-      <button onclick="googleLogin()">Login with Google</button>
+
+      <div id="error-message"></div>
+
+      <!-- Email/Password Login -->
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="College Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Sign In</button>
+      </form>
+
+      <div class="divider">OR</div>
+
+      <!-- Google Login -->
+      <button class="google-btn" onclick="googleLogin()">Login with Google</button>
+
+      <div class="link">
+        <span onclick="resetPassword()">Forgot Password?</span>
+      </div>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // 🔥 Firebase config (YOUR PROJECT)
     const firebaseConfig = {
       apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
       authDomain: "fwd-a5a74.firebaseapp.com",
@@ -107,19 +188,26 @@
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
+    const allowedDomain = "@bmsce.ac.in";
+    const errorEl = document.getElementById("error-message");
+
+    function showError(msg) {
+      errorEl.innerText = msg;
+      errorEl.style.display = "block";
+    }
+
+    // ✅ GOOGLE LOGIN
     window.googleLogin = async () => {
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
 
-        // 🔒 Domain restriction
-        if (!user.email.endsWith("@bmsce.ac.in")) {
-          alert("Only @bmsce.ac.in accounts are allowed");
+        if (!user.email.endsWith(allowedDomain)) {
           await auth.signOut();
+          showError("Only @bmsce.ac.in accounts are allowed.");
           return;
         }
 
-        // 💾 Save user to Firestore
         await setDoc(doc(db, "users", user.uid), {
           name: user.displayName,
           email: user.email,
@@ -127,12 +215,50 @@
           lastLogin: serverTimestamp()
         }, { merge: true });
 
-        // ✅ Redirect
         window.location.href = "./dashboard.html";
 
-      } catch (error) {
-        alert("Login failed: " + error.message);
+      } catch (err) {
+        showError(err.message);
       }
+    };
+
+    // ✅ EMAIL/PASSWORD LOGIN
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.style.display = "none";
+
+      const email = email.value.trim();
+      const password = password.value;
+
+      if (!email.endsWith(allowedDomain)) {
+        showError("Only @bmsce.ac.in emails allowed.");
+        return;
+      }
+
+      try {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+
+        await setDoc(doc(db, "users", result.user.uid), {
+          email: result.user.email,
+          lastLogin: serverTimestamp()
+        }, { merge: true });
+
+        window.location.href = "./dashboard.html";
+
+      } catch (err) {
+        showError("Invalid email or password.");
+      }
+    });
+
+    // ✅ RESET PASSWORD
+    window.resetPassword = async () => {
+      const email = prompt("Enter your college email:");
+      if (!email || !email.endsWith(allowedDomain)) {
+        alert("Use your @bmsce.ac.in email only");
+        return;
+      }
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent!");
     };
   </script>
 
