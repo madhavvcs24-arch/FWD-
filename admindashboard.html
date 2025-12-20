@@ -1,78 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard | Alumni Connect</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<title>Admin Dashboard – Manage Alumni</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f4f6fb;
+  font-family: Poppins, sans-serif;
+  background: #f5f7fb;
 }
-
 header {
-  background: #1A2238;
+  background: linear-gradient(135deg, #1f2a44, #24355f);
   color: white;
   padding: 18px 30px;
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
 }
-
 .container {
   padding: 30px;
 }
-
-h2 {
-  margin-bottom: 10px;
-}
-
 button {
-  padding: 8px 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
 }
-
 .add-btn {
   background: #2563eb;
   color: white;
   margin-bottom: 15px;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
 }
-
 th, td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 14px;
+  border-bottom: 1px solid #eee;
   text-align: left;
 }
-
 th {
   background: #f1f5f9;
 }
-
-.edit-btn {
-  background: #10b981;
+.action-btn {
+  margin-right: 6px;
+}
+.edit {
+  background: #22c55e;
   color: white;
 }
-
-.delete-btn {
+.delete {
   background: #ef4444;
   color: white;
-  margin-left: 5px;
 }
-
 .modal {
   display: none;
   position: fixed;
@@ -81,27 +67,20 @@ th {
   justify-content: center;
   align-items: center;
 }
-
 .modal-content {
   background: white;
   padding: 25px;
   width: 420px;
   border-radius: 12px;
 }
-
-.modal-content h3 {
-  margin-top: 0;
-}
-
 .modal-content input, textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   margin-bottom: 10px;
 }
-
-.close-btn {
-  background: #9ca3af;
-  color: white;
+.modal-content textarea {
+  resize: none;
+  height: 70px;
 }
 </style>
 </head>
@@ -127,10 +106,9 @@ th {
 </div>
 
 <!-- MODAL -->
-<div class="modal" id="alumniModal">
+<div class="modal" id="modal">
   <div class="modal-content">
     <h3 id="modalTitle">Add Alumni</h3>
-
     <input id="name" placeholder="Name">
     <input id="company" placeholder="Company">
     <input id="designation" placeholder="Designation">
@@ -139,32 +117,35 @@ th {
     <input id="branch" placeholder="Branch">
     <input id="linkedin" placeholder="LinkedIn URL">
     <textarea id="about" placeholder="About"></textarea>
-
-    <button onclick="saveAlumni()" class="add-btn">Save</button>
-    <button onclick="closeModal()" class="close-btn">Cancel</button>
+    <button class="add-btn" onclick="saveAlumni()">Save</button>
+    <button onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getFirestore, collection, getDocs,
+  addDoc, doc, updateDoc, deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const table = document.getElementById("alumniTable");
-const modal = document.getElementById("alumniModal");
 let editId = null;
 
 async function loadAlumni() {
+  const table = document.getElementById("alumniTable");
   table.innerHTML = "";
   const snapshot = await getDocs(collection(db, "alumni"));
+
   snapshot.forEach(docSnap => {
     const d = docSnap.data();
     table.innerHTML += `
@@ -173,8 +154,8 @@ async function loadAlumni() {
         <td>${d.company || ""}</td>
         <td>${d.designation || ""}</td>
         <td>
-          <button class="edit-btn" onclick="editAlumni('${docSnap.id}')">Edit</button>
-          <button class="delete-btn" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+          <button class="action-btn edit" onclick="editAlumni('${docSnap.id}')">Edit</button>
+          <button class="action-btn delete" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
         </td>
       </tr>
     `;
@@ -183,11 +164,13 @@ async function loadAlumni() {
 
 window.openAdd = () => {
   editId = null;
-  modal.style.display = "flex";
+  document.getElementById("modalTitle").innerText = "Add Alumni";
+  document.querySelectorAll("#modal input, #modal textarea").forEach(e => e.value = "");
+  document.getElementById("modal").style.display = "flex";
 };
 
 window.closeModal = () => {
-  modal.style.display = "none";
+  document.getElementById("modal").style.display = "none";
 };
 
 window.saveAlumni = async () => {
@@ -207,28 +190,24 @@ window.saveAlumni = async () => {
   } else {
     await addDoc(collection(db, "alumni"), data);
   }
-
   closeModal();
   loadAlumni();
 };
 
 window.editAlumni = async (id) => {
   editId = id;
+  document.getElementById("modalTitle").innerText = "Edit Alumni";
   const snap = await getDocs(collection(db, "alumni"));
   snap.forEach(d => {
     if (d.id === id) {
-      const a = d.data();
-      name.value = a.name || "";
-      company.value = a.company || "";
-      designation.value = a.designation || "";
-      email.value = a.email || "";
-      batch.value = a.batch || "";
-      branch.value = a.branch || "";
-      linkedin.value = a.linkedin || "";
-      about.value = a.about || "";
+      Object.keys(d.data()).forEach(k => {
+        if (document.getElementById(k)) {
+          document.getElementById(k).value = d.data()[k];
+        }
+      });
     }
   });
-  modal.style.display = "flex";
+  document.getElementById("modal").style.display = "flex";
 };
 
 window.deleteAlumni = async (id) => {
