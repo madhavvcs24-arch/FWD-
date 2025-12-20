@@ -1,215 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard | Alumni Connect</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-  font-family: Poppins, sans-serif;
-  background: #f5f7fb;
-  margin: 0;
-}
-
-header {
-  background: #1e40af;
-  color: white;
-  padding: 16px 30px;
-  font-size: 1.4rem;
-  font-weight: 700;
-}
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px;
-}
-
-form {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-}
-
-form input, form textarea {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-form textarea {
-  grid-column: span 2;
-}
-
-form button {
-  grid-column: span 2;
-  background: #2563eb;
-  color: white;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-table {
-  width: 100%;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 14px;
-  text-align: left;
-}
-
-th {
-  background: #eef2ff;
-}
-
-button.action {
-  margin-right: 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.edit { background: #10b981; color: white; }
-.delete { background: #ef4444; color: white; }
-</style>
+  <meta charset="UTF-8">
+  <title>Admin – Alumni</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family:Poppins; background:#f5f7fb; padding:30px }
+    .card {
+      background:#fff; padding:15px; margin-bottom:15px;
+      border-radius:10px;
+    }
+    input, textarea { width:100%; padding:8px; margin:5px 0 }
+    button { margin-top:5px }
+  </style>
 </head>
-
 <body>
 
-<header>Admin Dashboard – Alumni Management</header>
+<h2>Admin – Edit Alumni</h2>
 
-<div class="container">
+<div id="list"></div>
 
-<h2>Add / Edit Alumni</h2>
-
-<form id="alumniForm">
-  <input type="hidden" id="docId">
-  <input id="name" placeholder="Name" required>
-  <input id="company" placeholder="Company" required>
-  <input id="designation" placeholder="Designation" required>
-  <input id="branch" placeholder="Branch" required>
-  <input id="batch" placeholder="Batch" required>
-  <input id="email" placeholder="Email" required>
-  <input id="linkedin" placeholder="LinkedIn URL" required>
-  <textarea id="about" placeholder="About alumni" required></textarea>
-  <button type="submit">Save Alumni</button>
-</form>
-
-<h2>Alumni List</h2>
-
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Company</th>
-<th>Batch</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody id="alumniTable"></tbody>
-</table>
-
-</div>
-
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-  authDomain: "fwd-a5a74.firebaseapp.com",
-  projectId: "fwd-a5a74",
-  storageBucket: "fwd-a5a74.appspot.com",
-  messagingSenderId: "611520933176",
-  appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const alumniRef = collection(db, "alumni");
 
-const form = document.getElementById("alumniForm");
-const table = document.getElementById("alumniTable");
+const snap = await getDocs(collection(db, "alumni"));
+const list = document.getElementById("list");
 
-async function loadAlumni() {
-  table.innerHTML = "";
-  const snap = await getDocs(alumniRef);
-  snap.forEach(d => {
-    const a = d.data();
-    table.innerHTML += `
-      <tr>
-        <td>${a.name}</td>
-        <td>${a.company}</td>
-        <td>${a.batch}</td>
-        <td>
-          <button class="action edit" onclick="editAlumni('${d.id}', '${a.name}', '${a.company}', '${a.designation}', '${a.branch}', '${a.batch}', '${a.email}', '${a.linkedin}', '${a.about}')">Edit</button>
-          <button class="action delete" onclick="deleteAlumni('${d.id}')">Delete</button>
-        </td>
-      </tr>`;
-  });
-}
-
-window.editAlumni = (id, name, company, designation, branch, batch, email, linkedin, about) => {
-  docId.value = id;
-  name.value = name;
-  company.value = company;
-  designation.value = designation;
-  branch.value = branch;
-  batch.value = batch;
-  email.value = email;
-  linkedin.value = linkedin;
-  about.value = about;
-};
-
-window.deleteAlumni = async (id) => {
-  if (confirm("Delete this alumni?")) {
-    await deleteDoc(doc(db, "alumni", id));
-    loadAlumni();
-  }
-};
-
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const data = {
-    name: name.value,
-    company: company.value,
-    designation: designation.value,
-    branch: branch.value,
-    batch: batch.value,
-    email: email.value,
-    linkedin: linkedin.value,
-    about: about.value
-  };
-
-  if (docId.value) {
-    await updateDoc(doc(db, "alumni", docId.value), data);
-  } else {
-    await addDoc(alumniRef, data);
-  }
-
-  form.reset();
-  docId.value = "";
-  loadAlumni();
+snap.forEach(d => {
+  const a = d.data();
+  list.innerHTML += `
+    <div class="card">
+      <input value="${a.name || ""}" id="name-${d.id}">
+      <input value="${a.company || ""}" id="company-${d.id}">
+      <input value="${a.designation || ""}" id="designation-${d.id}">
+      <input value="${a.email || ""}" id="email-${d.id}">
+      <input value="${a.batch || ""}" id="batch-${d.id}">
+      <input value="${a.branch || ""}" id="branch-${d.id}">
+      <input value="${a.linkedin || ""}" id="linkedin-${d.id}">
+      <textarea id="about-${d.id}">${a.about || ""}</textarea>
+      <button onclick="save('${d.id}')">Save</button>
+    </div>
+  `;
 });
 
-loadAlumni();
+window.save = async (id) => {
+  await updateDoc(doc(db, "alumni", id), {
+    name: document.getElementById(`name-${id}`).value,
+    company: document.getElementById(`company-${id}`).value,
+    designation: document.getElementById(`designation-${id}`).value,
+    email: document.getElementById(`email-${id}`).value,
+    batch: document.getElementById(`batch-${id}`).value,
+    branch: document.getElementById(`branch-${id}`).value,
+    linkedin: document.getElementById(`linkedin-${id}`).value,
+    about: document.getElementById(`about-${id}`).value
+  });
+  alert("Updated");
+};
 </script>
-
 </body>
 </html>
