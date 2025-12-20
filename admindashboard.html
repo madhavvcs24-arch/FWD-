@@ -1,67 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
-  <script type="module">
-    import { db } from "./firebase.js";
-    import {
-      collection, addDoc, getDocs, doc, updateDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<meta charset="UTF-8">
+<title>Admin Dashboard | Alumni Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    const form = document.getElementById("form");
-    const list = document.getElementById("list");
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    async function load() {
-      list.innerHTML = "";
-      const snap = await getDocs(collection(db, "alumni"));
-      snap.forEach(d => {
-        const a = d.data();
-        list.innerHTML += `
-          <div>
-            <input value="${a.name}" id="n-${d.id}">
-            <input value="${a.company}" id="c-${d.id}">
-            <input value="${a.designation}" id="d-${d.id}">
-            <button onclick="save('${d.id}')">Save</button>
-          </div>`;
-      });
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f3f4f6;
+}
 
-    window.save = async id => {
-      await updateDoc(doc(db, "alumni", id), {
-        name: document.getElementById("n-"+id).value,
-        company: document.getElementById("c-"+id).value,
-        designation: document.getElementById("d-"+id).value
-      });
-      alert("Updated");
-    };
+header {
+  background: #1e3a8a;
+  color: white;
+  padding: 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
 
-    form.onsubmit = async e => {
-      e.preventDefault();
-      await addDoc(collection(db, "alumni"), {
-        name: name.value,
-        company: company.value,
-        designation: designation.value,
-        linkedin: linkedin.value
-      });
-      form.reset();
-      load();
-    };
+.container {
+  padding: 30px;
+}
 
-    load();
-  </script>
+form {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 500px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+table {
+  margin-top: 40px;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background: #f9fafb;
+}
+
+.action-btn {
+  background: #ef4444;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.edit-btn {
+  background: #10b981;
+}
+</style>
 </head>
 
 <body>
-  <h2>Add Alumni</h2>
-  <form id="form">
-    <input id="name" placeholder="Name" required>
-    <input id="company" placeholder="Company" required>
-    <input id="designation" placeholder="Designation" required>
-    <input id="linkedin" placeholder="LinkedIn">
-    <button>Add</button>
-  </form>
 
-  <h2>Existing Alumni</h2>
-  <div id="list"></div>
+<header>Admin Dashboard – Manage Alumni</header>
+
+<div class="container">
+
+<!-- Add / Edit Alumni -->
+<form id="alumniForm">
+  <h3>Add / Edit Alumni</h3>
+  <input type="hidden" id="docId">
+
+  <input type="text" id="name" placeholder="Alumni Name" required>
+  <input type="text" id="company" placeholder="Company" required>
+  <input type="text" id="designation" placeholder="Designation" required>
+  <input type="text" id="linkedin" placeholder="LinkedIn URL" required>
+
+  <button type="submit">Save Alumni</button>
+</form>
+
+<!-- Alumni Table -->
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Company</th>
+      <th>Designation</th>
+      <th>LinkedIn</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="alumniTable"></tbody>
+</table>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs,
+  deleteDoc, doc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const alumniRef = collection(db, "alumni");
+
+const form = document.getElementById("alumniForm");
+const table = document.getElementById("alumniTable");
+
+// Load alumni
+async function loadAlumni() {
+  table.innerHTML = "";
+  const snapshot = await getDocs(alumniRef);
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    table.innerHTML += `
+      <tr>
+        <td>${data.name}</td>
+        <td>${data.company}</td>
+        <td>${data.designation}</td>
+        <td><a href="${data.linkedin}" target="_blank">Profile</a></td>
+        <td>
+          <button class="edit-btn" onclick="editAlumni('${docSnap.id}','${data.name}','${data.company}','${data.designation}','${data.linkedin}')">Edit</button>
+          <button class="action-btn" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+loadAlumni();
+
+// Add / Update alumni
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const id = document.getElementById("docId").value;
+  const data = {
+    name: name.value,
+    company: company.value,
+    designation: designation.value,
+    linkedin: linkedin.value
+  };
+
+  if (id) {
+    await updateDoc(doc(db, "alumni", id), data);
+  } else {
+    await addDoc(alumniRef, data);
+  }
+
+  form.reset();
+  document.getElementById("docId").value = "";
+  loadAlumni();
+});
+
+// Delete alumni
+window.deleteAlumni = async id => {
+  if (confirm("Delete this alumni?")) {
+    await deleteDoc(doc(db, "alumni", id));
+    loadAlumni();
+  }
+};
+
+// Edit alumni
+window.editAlumni = (id, n, c, d, l) => {
+  docId.value = id;
+  name.value = n;
+  company.value = c;
+  designation.value = d;
+  linkedin.value = l;
+};
+</script>
+
 </body>
 </html>
