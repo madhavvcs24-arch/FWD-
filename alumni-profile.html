@@ -1,105 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Alumni Profile</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Alumni Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f4f6fb;
-  margin: 0;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+    }
 
-header {
-  background: #1A2238;
-  color: white;
-  padding: 18px 30px;
-  font-size: 1.4rem;
-  font-weight: 700;
-}
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
 
-.profile {
-  max-width: 600px;
-  margin: 40px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-}
+    h1 {
+      margin-top: 0;
+      color: #1e3a8a;
+    }
 
-.profile h2 {
-  margin-top: 0;
-  color: #1e3a8a;
-}
+    p {
+      font-size: 1.05rem;
+      margin: 10px 0;
+    }
 
-.profile p {
-  font-size: 1.05rem;
-  margin: 10px 0;
-}
-
-.profile a {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 20px;
-  background: #2563eb;
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: 600;
-}
-</style>
+    a {
+      color: #2563eb;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>Alumni Profile</header>
+<div class="container">
+  <h1 id="name">Loading...</h1>
+  <p><b>Company:</b> <span id="company"></span></p>
+  <p><b>Designation:</b> <span id="designation"></span></p>
+  <p><b>LinkedIn:</b> <a id="linkedin" target="_blank">View Profile</a></p>
+</div>
 
-<div class="profile" id="profileBox">Loading...</div>
-
-<!-- Firebase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-  authDomain: "fwd-a5a74.firebaseapp.com",
-  projectId: "fwd-a5a74",
-  storageBucket: "fwd-a5a74.appspot.com",
-  messagingSenderId: "611520933176",
-  appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+    authDomain: "fwd-a5a74.firebaseapp.com",
+    projectId: "fwd-a5a74",
+    storageBucket: "fwd-a5a74.appspot.com",
+    messagingSenderId: "611520933176",
+    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-const box = document.getElementById("profileBox");
+  const params = new URLSearchParams(window.location.search);
+  const alumniId = params.get("id");
 
-const loadProfile = async () => {
-  const ref = doc(db, "alumni", id);
-  const snap = await getDoc(ref);
+  async function loadProfile() {
+    const ref = doc(db, "alumni", alumniId);
+    const snap = await getDoc(ref);
 
-  if (!snap.exists()) {
-    box.innerHTML = "Profile not found";
-    return;
+    if (!snap.exists()) {
+      alert("Alumni not found");
+      return;
+    }
+
+    const a = snap.data();
+    document.getElementById("name").textContent = a.name;
+    document.getElementById("company").textContent = a.company;
+    document.getElementById("designation").textContent = a.designation;
+    document.getElementById("linkedin").href = a.linkedin;
   }
 
-  const a = snap.data();
-  box.innerHTML = `
-    <h2>${a.name}</h2>
-    <p><strong>Designation:</strong> ${a.designation}</p>
-    <p><strong>Company:</strong> ${a.company}</p>
-    <a href="${a.linkedin}" target="_blank">View LinkedIn</a>
-  `;
-};
-
-loadProfile();
+  loadProfile();
 </script>
 
 </body>
