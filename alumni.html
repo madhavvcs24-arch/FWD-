@@ -1,216 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Alumni Directory | Alumni Connect</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>Alumni | Alumni Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #f6f8fc;
-      color: #1f2937;
-    }
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6fb;
+  margin: 0;
+}
 
-    header {
-      background: #ffffff;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+header {
+  background: #1A2238;
+  color: white;
+  padding: 18px 30px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
 
-    header h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      color: #4f46e5;
-    }
+.container {
+  padding: 30px;
+}
 
-    .btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #6366f1;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-    }
+.search-box {
+  margin-bottom: 25px;
+}
 
-    main {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
+.search-box input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
 
-    .banner {
-      background: linear-gradient(135deg, #eef2ff, #f8fafc);
-      padding: 30px;
-      border-radius: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
 
-    .banner h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
 
-    .search-box {
-      margin: 30px 0;
-      max-width: 300px;
-    }
+.card:hover {
+  transform: translateY(-5px);
+}
 
-    .search-box input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      font-size: 0.95rem;
-    }
+.card h3 {
+  margin: 0;
+  color: #1e3a8a;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 1.2rem;
-    }
-
-    .card p {
-      margin: 6px 0;
-      font-size: 0.95rem;
-      color: #4b5563;
-    }
-
-    .card a {
-      display: inline-block;
-      margin-top: 12px;
-      color: #2563eb;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    footer {
-      margin: 60px 0 20px;
-      text-align: center;
-      color: #6b7280;
-      font-size: 0.9rem;
-    }
-  </style>
+.card p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h2>🎓 Alumni Connect</h2>
-  <a href="dashboard.html" class="btn">← Dashboard</a>
-</header>
+<header>Alumni Directory</header>
 
-<main>
-  <div class="banner">
-    <div>
-      <h1>Alumni Directory</h1>
-      <p>Browse alumni and connect with professionals.</p>
-    </div>
-    <div id="count">0 found</div>
-  </div>
-
+<div class="container">
   <div class="search-box">
-    <input type="text" id="search" placeholder="Search name, company, role..." />
+    <input type="text" id="searchInput" placeholder="Search by name, company or designation">
   </div>
 
-  <div id="alumniGrid" class="grid"></div>
+  <div class="grid" id="alumniGrid"></div>
+</div>
 
-  <p id="error" style="color:red; display:none;">Failed to load alumni data.</p>
-</main>
-
-<footer>
-  © 2025 Alumni Connect
-</footer>
-
-<!-- FIREBASE -->
+<!-- Firebase -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-    authDomain: "fwd-a5a74.firebaseapp.com",
-    projectId: "fwd-a5a74",
-    storageBucket: "fwd-a5a74.appspot.com",
-    messagingSenderId: "611520933176",
-    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74",
+  storageBucket: "fwd-a5a74.appspot.com",
+  messagingSenderId: "611520933176",
+  appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const grid = document.getElementById("alumniGrid");
-  const countEl = document.getElementById("count");
-  const errorEl = document.getElementById("error");
-  const searchInput = document.getElementById("search");
+let alumniList = [];
 
-  let alumniData = [];
+const grid = document.getElementById("alumniGrid");
+const searchInput = document.getElementById("searchInput");
 
-  async function loadAlumni() {
-    try {
-      const snapshot = await getDocs(collection(db, "alumni"));
-      alumniData = snapshot.docs.map(doc => doc.data());
-      render(alumniData);
-    } catch (e) {
-      console.error(e);
-      errorEl.style.display = "block";
-    }
-  }
-
-  function render(data) {
-    grid.innerHTML = "";
-    countEl.innerText = `${data.length} found`;
-
-    data.forEach(a => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <h3>${a.name}</h3>
-        <p>${a.designation} — ${a.company}</p>
-        <a href="${a.linkedin}" target="_blank">View LinkedIn</a>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
-  searchInput.addEventListener("input", e => {
-    const q = e.target.value.toLowerCase();
-    const filtered = alumniData.filter(a =>
-      a.name.toLowerCase().includes(q) ||
-      a.company.toLowerCase().includes(q) ||
-      a.designation.toLowerCase().includes(q)
-    );
-    render(filtered);
+function renderAlumni(data) {
+  grid.innerHTML = "";
+  data.forEach(a => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>${a.name}</h3>
+      <p><strong>${a.designation}</strong></p>
+      <p>${a.company}</p>
+    `;
+    div.onclick = () => {
+      window.location.href = `alumniprofile.html?id=${a.id}`;
+    };
+    grid.appendChild(div);
   });
+}
 
-  loadAlumni();
+const fetchAlumni = async () => {
+  const snapshot = await getDocs(collection(db, "alumni"));
+  alumniList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  renderAlumni(alumniList);
+};
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase();
+  const filtered = alumniList.filter(a =>
+    a.name.toLowerCase().includes(q) ||
+    a.company.toLowerCase().includes(q) ||
+    a.designation.toLowerCase().includes(q)
+  );
+  renderAlumni(filtered);
+});
+
+fetchAlumni();
 </script>
 
 </body>
