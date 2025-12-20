@@ -1,262 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Alumni Profile</title>
+<meta charset="UTF-8">
+<title>Alumni Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome (icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    /* small override for body font */
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-  </style>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6fb;
+  margin: 0;
+}
+
+header {
+  background: #1A2238;
+  color: white;
+  padding: 18px 30px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.profile {
+  max-width: 600px;
+  margin: 40px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.profile h2 {
+  margin-top: 0;
+  color: #1e3a8a;
+}
+
+.profile p {
+  font-size: 1.05rem;
+  margin: 10px 0;
+}
+
+.profile a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800">
 
-  <!-- Header -->
-  <header class="bg-white shadow-sm border-b border-gray-200">
-    <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex-shrink-0 flex items-center">
-          <div class="bg-blue-600 p-2 rounded-lg">
-            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.697 50.697 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5z"/>
-            </svg>
-          </div>
-          <span class="ml-3 text-xl font-bold text-gray-800">College Placement Connect</span>
-        </div>
+<body>
 
-        <div class="hidden md:flex md:items-center md:space-x-6">
-          <a href="dashboard.html" class="text-gray-600 hover:text-blue-600 font-medium">Dashboard</a>
-          <a href="companies.html" class="text-gray-600 hover:text-blue-600 font-medium">Companies</a>
-          <a href="alumni.html" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Alumni</a>
-        </div>
+<header>Alumni Profile</header>
 
-        <div>
-          <a href="index.html" class="inline-block bg-white text-red-600 font-medium py-2 px-4 border border-red-600 rounded-lg shadow-sm hover:bg-red-50 transition">Logout</a>
-        </div>
-      </div>
-    </nav>
-  </header>
+<div class="profile" id="profileBox">Loading...</div>
 
-  <!-- Main -->
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" id="main">
-    <!-- content populated by JS -->
-    <div id="profileContainer" class="hidden">
-      <div class="mb-6">
-        <a id="backLink" href="alumni.html" class="flex items-center text-gray-600 font-medium hover:text-blue-600 transition-colors duration-200">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Alumni
-        </a>
-      </div>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div class="p-6 md:p-10">
-          <div class="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-6">
-            <img id="profileImg" class="h-32 w-32 rounded-full object-cover flex-shrink-0 border-4 border-blue-500 shadow-md" src="" alt="Alumni photo">
-            <div class="mt-4 sm:mt-0 text-center sm:text-left">
-              <h1 id="profileName" class="text-3xl font-bold text-gray-900">Name Here</h1>
-              <p id="profileRole" class="text-xl text-gray-600 mt-1">Role</p>
-              <p id="profileCompany" class="text-md text-gray-600 mt-1 font-medium"></p>
-            </div>
-          </div>
+const firebaseConfig = {
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74",
+  storageBucket: "fwd-a5a74.appspot.com",
+  messagingSenderId: "611520933176",
+  appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+};
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-            <div class="flex items-center">
-              <i class="fas fa-graduation-cap w-6 text-center text-2xl text-blue-600 mr-4"></i>
-              <div>
-                <p class="text-sm text-gray-500">Branch</p>
-                <p id="profileBranch" class="text-lg font-medium text-gray-900">—</p>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <i class="fas fa-calendar-alt w-6 text-center text-2xl text-blue-600 mr-4"></i>
-              <div>
-                <p class="text-sm text-gray-500">Batch</p>
-                <p id="profileBatch" class="text-lg font-medium text-gray-900">—</p>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <i class="fas fa-building w-6 text-center text-2xl text-blue-600 mr-4"></i>
-              <div>
-                <p class="text-sm text-gray-500">Company</p>
-                <p id="profileCompanySmall" class="text-lg font-medium text-gray-900">—</p>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <i class="fas fa-user-tie w-6 text-center text-2xl text-blue-600 mr-4"></i>
-              <div>
-                <p class="text-sm text-gray-500">Role</p>
-                <p id="profileRoleSmall" class="text-lg font-medium text-gray-900">—</p>
-              </div>
-            </div>
-          </div>
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-          <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8">
-            <a id="emailBtn" class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200" href="#">
-              <i class="fas fa-envelope mr-2"></i> Send Email
-            </a>
-            <a id="linkedinBtn" class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium border border-gray-300 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-200" href="#" target="_blank">
-              <i class="fab fa-linkedin mr-2"></i> LinkedIn Profile
-            </a>
-          </div>
-        </div>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const box = document.getElementById("profileBox");
 
-        <div class="border-t border-gray-200"></div>
+const loadProfile = async () => {
+  const ref = doc(db, "alumni", id);
+  const snap = await getDoc(ref);
 
-        <div class="p-6 md:p-10">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">About</h2>
-          <p id="profileAbout" class="text-gray-700 leading-relaxed">—</p>
-        </div>
+  if (!snap.exists()) {
+    box.innerHTML = "Profile not found";
+    return;
+  }
 
-        <div class="border-t border-gray-200"></div>
+  const a = snap.data();
+  box.innerHTML = `
+    <h2>${a.name}</h2>
+    <p><strong>Designation:</strong> ${a.designation}</p>
+    <p><strong>Company:</strong> ${a.company}</p>
+    <a href="${a.linkedin}" target="_blank">View LinkedIn</a>
+  `;
+};
 
-        <div class="p-6 md:p-10">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">Contact Information</h2>
-          <div class="space-y-4">
-            <a id="mailLink" href="#" class="flex items-center text-blue-600 hover:underline">
-              <i class="fas fa-envelope w-5 text-center text-xl mr-3"></i>
-              <span id="mailText" class="font-medium"></span>
-            </a>
-            <a id="linkedinLink" href="#" class="flex items-center text-blue-600 hover:underline" target="_blank">
-              <i class="fab fa-linkedin w-5 text-center text-xl mr-3"></i>
-              <span id="linkedinText" class="font-medium">LinkedIn Profile</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+loadProfile();
+</script>
 
-    <div id="notFound" class="text-center py-20">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Alumni not found</h2>
-      <p class="text-gray-600 mb-6">We couldn't find the alumni you're looking for.</p>
-      <div class="space-x-3">
-        <a href="alumni.html" class="inline-block bg-white border border-gray-300 px-4 py-2 rounded-md">Back to Alumni</a>
-        <a href="dashboard.html" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md">Go to Dashboard</a>
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="bg-white mt-12 border-t border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <p class="text-center text-gray-500 text-sm">&copy; 2025 College Placement Connect. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script>
-    // demo alumni data (same ids used in alumni list)
-    const alumni = {
-      arjun: {
-        id: 'arjun',
-        name: 'Arjun Mehta',
-        role: 'Software Engineer',
-        company: 'Google',
-        branch: 'Computer Science',
-        batch: '2021',
-        email: 'arjun@example.com',
-        linkedin: 'https://www.linkedin.com/',
-        about: 'Frontend engineer working on performance and UX at Google. Loves mentoring students and contributing to open-source.',
-        img: 'https://via.placeholder.com/128.png?text=A'
-      },
-      bhawna: {
-        id: 'bhawna',
-        name: 'Bhawna Nair',
-        role: 'Data Analyst',
-        company: 'Microsoft',
-        branch: 'Electronics & Communication',
-        batch: '2022',
-        email: 'bhawna@example.com',
-        linkedin: 'https://www.linkedin.com/',
-        about: 'Data analyst focused on insights and visualization. Regular guest lecturer for data workshops.',
-        img: 'https://via.placeholder.com/128.png?text=B'
-      },
-      priya: {
-        id: 'priya',
-        name: 'Priya Patel',
-        role: 'Frontend Developer',
-        company: 'Google',
-        branch: 'Computer Science',
-        batch: '2024',
-        email: 'priya.patel@example.com',
-        linkedin: 'https://www.linkedin.com/',
-        about: 'Frontend enthusiast specializing in React and modern web technologies. Always excited to share knowledge with fellow developers.',
-        img: 'https://via.placeholder.com/128.png?text=PP'
-      },
-      ravi: {
-        id: 'ravi',
-        name: 'Ravi Kumar',
-        role: 'Cloud Specialist',
-        company: 'Salesforce',
-        branch: 'Information Technology',
-        batch: '2023',
-        email: 'ravi@example.com',
-        linkedin: 'https://www.linkedin.com/',
-        about: 'Cloud specialist focused on scalable infra and security.',
-        img: 'https://via.placeholder.com/128.png?text=R'
-      }
-    };
-
-    // Helper: parse ?id=... from URL
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    function showProfile(id) {
-      const data = alumni[id];
-      const profileContainer = document.getElementById('profileContainer');
-      const notFound = document.getElementById('notFound');
-
-      if (!data) {
-        profileContainer.classList.add('hidden');
-        notFound.classList.remove('hidden');
-        return;
-      }
-
-      // populate fields
-      document.getElementById('profileImg').src = data.img;
-      document.getElementById('profileImg').alt = data.name;
-      document.getElementById('profileName').textContent = data.name;
-      document.getElementById('profileRole').textContent = data.role;
-      document.getElementById('profileCompany').textContent = data.company;
-      document.getElementById('profileBranch').textContent = data.branch || '—';
-      document.getElementById('profileBatch').textContent = data.batch || '—';
-      document.getElementById('profileCompanySmall').textContent = data.company || '—';
-      document.getElementById('profileRoleSmall').textContent = data.role || '—';
-      document.getElementById('profileAbout').textContent = data.about || '—';
-
-      // contact links
-      const mailHref = `mailto:${data.email}`;
-      document.getElementById('emailBtn').href = mailHref;
-      document.getElementById('mailLink').href = mailHref;
-      document.getElementById('mailText').textContent = data.email || '';
-
-      document.getElementById('linkedinBtn').href = data.linkedin || '#';
-      document.getElementById('linkedinLink').href = data.linkedin || '#';
-      document.getElementById('linkedinText').textContent = 'LinkedIn Profile';
-
-      profileContainer.classList.remove('hidden');
-      notFound.classList.add('hidden');
-
-      // focus for accessibility
-      document.getElementById('profileName').focus && document.getElementById('profileName').focus();
-    }
-
-    // On load: get id and show profile
-    (function init(){
-      const id = getQueryParam('id');
-      if (!id) {
-        // if no id provided, show not found with quick back link
-        document.getElementById('profileContainer').classList.add('hidden');
-        document.getElementById('notFound').classList.remove('hidden');
-        return;
-      }
-      showProfile(id);
-    })();
-  </script>
 </body>
 </html>
