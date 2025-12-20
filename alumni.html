@@ -1,205 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Alumni | Alumni Connect</title>
+  <meta charset="UTF-8" />
+  <title>Alumni List | Alumni Connect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg:#f6f8fb;
-      --panel:#ffffff;
-      --primary:#1a2238;
-      --accent:#6366f1;
-      --accent-2:#4f46e5;
-      --muted:#6b7280;
-      --card-radius:12px;
-      --shadow: 0 12px 40px rgba(17,24,39,0.06);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    *{box-sizing:border-box}
-    body{
-      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      margin:0;
-      background:linear-gradient(180deg,var(--bg),#eef2ff 140%);
-      color:var(--primary);
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fb;
+      color: #1f2937;
     }
-    header{
-      background:var(--panel);
-      border-bottom:1px solid rgba(17,24,39,0.06);
-      position:sticky; top:0; z-index:200;
+
+    header {
+      background: #1A2238;
+      padding: 18px 30px;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
     }
-    .header-inner{ max-width:1200px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
-    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--primary); }
-    .brand i{ color:var(--accent-2); }
-    .header-actions{ display:flex; gap:10px; align-items:center; }
-    .btn-ghost{ background:transparent; border:1px solid rgba(17,24,39,0.06); padding:8px 12px; border-radius:8px; cursor:pointer; text-decoration:none; color:inherit; display:inline-flex; align-items:center; gap:8px; }
-    .btn-primary{ background:var(--accent); color:#fff; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
 
-    .wrap{ max-width:1200px; margin:28px auto; padding:0 20px; }
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-    .hero{ padding:28px; border-radius:12px; background:linear-gradient(90deg, rgba(99,102,241,0.06), rgba(79,70,229,0.01)); box-shadow:var(--shadow); display:flex; justify-content:space-between; gap:12px; align-items:center; }
-    .hero h1{ margin:0; font-size:1.4rem; }
-    .hero p{ margin:6px 0 0 0; color:var(--muted); }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 25px;
+      color: #111827;
+    }
 
-    .controls{ display:flex; gap:12px; align-items:center; margin-top:18px; flex-wrap:wrap; }
-    .controls input, .controls select{ padding:10px 12px; border-radius:10px; border:1px solid rgba(17,24,39,0.06); min-width:200px; }
+    .alumni-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 25px;
+    }
 
-    .grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:18px; margin-top:22px; }
-
-    /* Make the whole card an accessible link */
     .alumni-card {
-      display:block;
-      text-decoration:none;
-      color:inherit;
-      background:var(--panel);
-      border-radius:12px;
-      padding:16px;
-      box-shadow:var(--shadow);
-      text-align:center;
-      transition:transform .15s ease, box-shadow .15s ease;
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .alumni-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(17,24,39,0.07); }
 
-    .avatar{ width:86px; height:86px; border-radius:50%; object-fit:cover; margin:0 auto 12px; display:block; }
-    .alumni-name{ font-weight:600; color:var(--primary); margin-bottom:6px; font-size:1.05rem; }
-    .alumni-role{ color:var(--muted); margin-bottom:10px; font-size:0.95rem; }
-    .alumni-meta{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-    .tag{ background:#eef2ff; color:var(--accent-2); padding:6px 10px; border-radius:999px; font-size:0.8rem; }
+    .alumni-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
 
-    .card-actions{ display:flex; gap:8px; justify-content:center; }
-    .small{ font-size:0.9rem; color:var(--muted) }
+    .alumni-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #111827;
+    }
 
-    footer{ text-align:center; margin:36px 0 80px 0; color:var(--muted) }
+    .alumni-role {
+      font-size: 0.95rem;
+      color: #374151;
+      margin-bottom: 4px;
+    }
 
-    @media (max-width:600px){ .controls input{ min-width:140px } }
+    .alumni-company {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 14px;
+    }
+
+    .linkedin-btn {
+      display: inline-block;
+      padding: 8px 14px;
+      background: #2563eb;
+      color: white;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .linkedin-btn:hover {
+      background: #1e40af;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #6b7280;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
   </style>
 </head>
+
 <body>
+
   <header>
-    <div class="header-inner">
-      <a class="brand" href="dashboard.html"><i class="fa-solid fa-graduation-cap"></i>&nbsp;Alumni Connect</a>
-      <div class="header-actions">
-        <a class="btn-ghost" href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
-        <a class="btn-primary" href="index.html">Home</a>
-      </div>
-    </div>
+    Alumni Connect
   </header>
 
-  <main class="wrap" id="main">
-    <div class="hero" role="banner">
-      <div>
-        <h1>Alumni Directory</h1>
-        <p>Browse alumni by batch, company or role. Click a card to view the full profile.</p>
-      </div>
-      <div class="small"><strong id="count">0</strong> found</div>
-    </div>
+  <div class="container">
+    <h2>Our Alumni</h2>
 
-    <div class="controls" role="region" aria-label="filters">
-      <input id="search" placeholder="Search name, company, role..." />
-      <select id="batch">
-        <option value="">All batches</option>
-        <option>2024</option>
-        <option>2023</option>
-        <option>2022</option>
-        <option>2021</option>
-      </select>
-      <select id="company">
-        <option value="">All companies</option>
-        <option>Google</option>
-        <option>Microsoft</option>
-        <option>Salesforce</option>
-        <option>Tata Consultancy Services</option>
-        <option>Infosys</option>
-        <option>Goldman Sachs</option>
-      </select>
-      <button class="btn-ghost" onclick="resetFilters()">Reset</button>
-    </div>
+    <div id="loading" class="loading">Loading alumni...</div>
 
-    <section id="grid" class="grid" aria-live="polite"></section>
+    <div id="alumniGrid" class="alumni-grid"></div>
+  </div>
 
-    <footer>
-      <small>© 2025 Alumni Connect — <a href="index.html">College Home</a></small>
-    </footer>
-  </main>
+  <footer>
+    © 2025 Alumni Connect
+  </footer>
 
-  <script>
-    // demo data — keep ids in sync with alumni-profile.html
-    const alumni = [
-      { id:'arjun', name:'Arjun Mehta', role:'Software Engineer', company:'Google', batch:'2021', email:'arjun@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=A' },
-      { id:'bhawna', name:'Bhawna Nair', role:'Data Analyst', company:'Microsoft', batch:'2022', email:'bhawna@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=B' },
-      { id:'priya', name:'Priya Patel', role:'Frontend Developer', company:'Google', batch:'2024', email:'priya.patel@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=PP' },
-      { id:'ravi', name:'Ravi Kumar', role:'Cloud Specialist', company:'Salesforce', batch:'2023', email:'ravi@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=R' },
-      { id:'sneha', name:'Sneha Patil', role:'SWE Intern', company:'Infosys', batch:'2024', email:'sneha@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=S' },
-      { id:'karan', name:'Karan Gupta', role:'Analyst', company:'Goldman Sachs', batch:'2023', email:'karan@example.com', linkedin:'#', img:'https://via.placeholder.com/100.png?text=K' }
-    ];
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const grid = document.getElementById('grid');
-    const search = document.getElementById('search');
-    const batch = document.getElementById('batch');
-    const company = document.getElementById('company');
-    const countEl = document.getElementById('count');
+    // 🔴 YOUR FIREBASE CONFIG (same as student login)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+      authDomain: "fwd-a5a74.firebaseapp.com",
+      projectId: "fwd-a5a74",
+      storageBucket: "fwd-a5a74.appspot.com",
+      messagingSenderId: "611520933176",
+      appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+    };
 
-    function render(list){
-      grid.innerHTML = '';
-      if(!list.length){
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted)">No alumni found.</div>';
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const alumniGrid = document.getElementById("alumniGrid");
+    const loadingText = document.getElementById("loading");
+
+    async function loadAlumni() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "alumni"));
+
+        loadingText.style.display = "none";
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+
+          const card = document.createElement("div");
+          card.className = "alumni-card";
+
+          card.innerHTML = `
+            <div class="alumni-name">${data.name}</div>
+            <div class="alumni-role">${data.designation}</div>
+            <div class="alumni-company">${data.company}</div>
+            <a href="${data.linkedin}" target="_blank" class="linkedin-btn">
+              View LinkedIn
+            </a>
+          `;
+
+          alumniGrid.appendChild(card);
+        });
+
+      } catch (error) {
+        loadingText.innerText = "Failed to load alumni data.";
+        console.error(error);
       }
-      list.forEach(a=>{
-        // make the whole card an <a> linking to alumni-profile.html?id=<id>
-        const link = document.createElement('a');
-        link.className = 'alumni-card';
-        link.href = `alumni-profile.html?id=${encodeURIComponent(a.id)}`;
-        link.setAttribute('aria-label', `View profile of ${a.name}`);
-
-        link.innerHTML = `
-          <img class="avatar" src="${a.img}" alt="${a.name}" />
-          <div class="alumni-name">${a.name}</div>
-          <div class="alumni-role">${a.role} — ${a.company}</div>
-          <div class="alumni-meta"><span class="tag">${a.batch}</span></div>
-          <div class="card-actions">
-            <span class="small">View profile · Contact via email</span>
-          </div>
-        `;
-        grid.appendChild(link);
-      });
-      countEl.textContent = list.length;
     }
 
-    function contact(name,email){
-      const ok = confirm(`Open your email client to contact ${name} (${email})?`);
-      if(ok) location.href = `mailto:${email}?subject=Hello%20${encodeURIComponent(name)}`;
-    }
-
-    function applyFilters(){
-      const q = search.value.trim().toLowerCase();
-      const b = batch.value;
-      const c = company.value;
-      const filtered = alumni.filter(a=>{
-        const matchesQ = !q || (a.name + ' ' + a.company + ' ' + a.role).toLowerCase().includes(q);
-        const matchesB = !b || a.batch === b;
-        const matchesC = !c || a.company === c;
-        return matchesQ && matchesB && matchesC;
-      });
-      render(filtered);
-    }
-
-    function resetFilters(){
-      search.value=''; batch.value=''; company.value=''; applyFilters();
-    }
-
-    // events
-    search.addEventListener('input', applyFilters);
-    batch.addEventListener('change', applyFilters);
-    company.addEventListener('change', applyFilters);
-
-    // initial render
-    render(alumni);
+    loadAlumni();
   </script>
+
 </body>
 </html>
