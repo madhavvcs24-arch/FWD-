@@ -1,93 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Alumni</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Admin Dashboard | Alumni Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body { font-family:Poppins; background:#f5f7fb; margin:0; padding:20px }
-form,input,button { width:100%; margin-bottom:10px; padding:10px }
-table { width:100%; border-collapse:collapse }
-td,th { padding:10px; border-bottom:1px solid #ccc }
-button { cursor:pointer }
+body {
+  font-family: Poppins, sans-serif;
+  background: #f5f7fb;
+  margin: 0;
+}
+
+header {
+  background: #1e40af;
+  color: white;
+  padding: 16px 30px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+}
+
+form {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+form input, form textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+form textarea {
+  grid-column: span 2;
+}
+
+form button {
+  grid-column: span 2;
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+}
+
+th {
+  background: #eef2ff;
+}
+
+button.action {
+  margin-right: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit { background: #10b981; color: white; }
+.delete { background: #ef4444; color: white; }
 </style>
 </head>
 
 <body>
 
-<h2>Manage Alumni</h2>
+<header>Admin Dashboard – Alumni Management</header>
 
-<form id="form">
-<input id="name" placeholder="Name" required>
-<input id="designation" placeholder="Designation" required>
-<input id="company" placeholder="Company" required>
-<input id="linkedin" placeholder="LinkedIn URL" required>
-<button>Add / Update</button>
+<div class="container">
+
+<h2>Add / Edit Alumni</h2>
+
+<form id="alumniForm">
+  <input type="hidden" id="docId">
+  <input id="name" placeholder="Name" required>
+  <input id="company" placeholder="Company" required>
+  <input id="designation" placeholder="Designation" required>
+  <input id="branch" placeholder="Branch" required>
+  <input id="batch" placeholder="Batch" required>
+  <input id="email" placeholder="Email" required>
+  <input id="linkedin" placeholder="LinkedIn URL" required>
+  <textarea id="about" placeholder="About alumni" required></textarea>
+  <button type="submit">Save Alumni</button>
 </form>
 
-<table id="table"></table>
+<h2>Alumni List</h2>
 
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Company</th>
+<th>Batch</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="alumniTable"></tbody>
+</table>
+
+</div>
+
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT"
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74",
+  storageBucket: "fwd-a5a74.appspot.com",
+  messagingSenderId: "611520933176",
+  appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const col = collection(db,"alumni");
+const alumniRef = collection(db, "alumni");
 
-let editId=null;
+const form = document.getElementById("alumniForm");
+const table = document.getElementById("alumniTable");
 
-async function load() {
-  const snap=await getDocs(col);
-  table.innerHTML="";
-  snap.forEach(d=>{
-    const a=d.data();
-    table.innerHTML+=`
-    <tr>
-      <td>${a.name}</td>
-      <td>${a.company}</td>
-      <td>
-        <button onclick="edit('${d.id}','${a.name}','${a.designation}','${a.company}','${a.linkedin}')">Edit</button>
-        <button onclick="del('${d.id}')">Delete</button>
-      </td>
-    </tr>`;
+async function loadAlumni() {
+  table.innerHTML = "";
+  const snap = await getDocs(alumniRef);
+  snap.forEach(d => {
+    const a = d.data();
+    table.innerHTML += `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.company}</td>
+        <td>${a.batch}</td>
+        <td>
+          <button class="action edit" onclick="editAlumni('${d.id}', '${a.name}', '${a.company}', '${a.designation}', '${a.branch}', '${a.batch}', '${a.email}', '${a.linkedin}', '${a.about}')">Edit</button>
+          <button class="action delete" onclick="deleteAlumni('${d.id}')">Delete</button>
+        </td>
+      </tr>`;
   });
 }
 
-window.edit=(id,n,d,c,l)=>{
-  editId=id;
-  name.value=n;
-  designation.value=d;
-  company.value=c;
-  linkedin.value=l;
+window.editAlumni = (id, name, company, designation, branch, batch, email, linkedin, about) => {
+  docId.value = id;
+  name.value = name;
+  company.value = company;
+  designation.value = designation;
+  branch.value = branch;
+  batch.value = batch;
+  email.value = email;
+  linkedin.value = linkedin;
+  about.value = about;
 };
 
-window.del=async(id)=>{
-  await deleteDoc(doc(db,"alumni",id));
-  load();
-};
-
-form.onsubmit=async e=>{
-  e.preventDefault();
-  const data={name:name.value,designation:designation.value,company:company.value,linkedin:linkedin.value};
-  if(editId){
-    await updateDoc(doc(db,"alumni",editId),data);
-    editId=null;
-  } else {
-    await addDoc(col,data);
+window.deleteAlumni = async (id) => {
+  if (confirm("Delete this alumni?")) {
+    await deleteDoc(doc(db, "alumni", id));
+    loadAlumni();
   }
-  form.reset();
-  load();
 };
 
-load();
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const data = {
+    name: name.value,
+    company: company.value,
+    designation: designation.value,
+    branch: branch.value,
+    batch: batch.value,
+    email: email.value,
+    linkedin: linkedin.value,
+    about: about.value
+  };
+
+  if (docId.value) {
+    await updateDoc(doc(db, "alumni", docId.value), data);
+  } else {
+    await addDoc(alumniRef, data);
+  }
+
+  form.reset();
+  docId.value = "";
+  loadAlumni();
+});
+
+loadAlumni();
 </script>
 
 </body>
