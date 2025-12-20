@@ -1,208 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Admin Dashboard | Alumni Connect</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Admin Alumni</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f3f4f6;
-}
-
-header {
-  background: #1e3a8a;
-  color: white;
-  padding: 20px;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.container {
-  padding: 30px;
-}
-
-form {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-  max-width: 500px;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-button {
-  padding: 12px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #1e40af;
-}
-
-table {
-  margin-top: 40px;
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: left;
-}
-
-th {
-  background: #f9fafb;
-}
-
-.action-btn {
-  background: #ef4444;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-}
-
-.edit-btn {
-  background: #10b981;
-}
+body { font-family:Poppins; background:#f5f7fb; margin:0; padding:20px }
+form,input,button { width:100%; margin-bottom:10px; padding:10px }
+table { width:100%; border-collapse:collapse }
+td,th { padding:10px; border-bottom:1px solid #ccc }
+button { cursor:pointer }
 </style>
 </head>
 
 <body>
 
-<header>Admin Dashboard – Manage Alumni</header>
+<h2>Manage Alumni</h2>
 
-<div class="container">
-
-<!-- Add / Edit Alumni -->
-<form id="alumniForm">
-  <h3>Add / Edit Alumni</h3>
-  <input type="hidden" id="docId">
-
-  <input type="text" id="name" placeholder="Alumni Name" required>
-  <input type="text" id="company" placeholder="Company" required>
-  <input type="text" id="designation" placeholder="Designation" required>
-  <input type="text" id="linkedin" placeholder="LinkedIn URL" required>
-
-  <button type="submit">Save Alumni</button>
+<form id="form">
+<input id="name" placeholder="Name" required>
+<input id="designation" placeholder="Designation" required>
+<input id="company" placeholder="Company" required>
+<input id="linkedin" placeholder="LinkedIn URL" required>
+<button>Add / Update</button>
 </form>
 
-<!-- Alumni Table -->
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Company</th>
-      <th>Designation</th>
-      <th>LinkedIn</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="alumniTable"></tbody>
-</table>
+<table id="table"></table>
 
-</div>
-
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, getDocs,
-  deleteDoc, doc, updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-  authDomain: "fwd-a5a74.firebaseapp.com",
-  projectId: "fwd-a5a74",
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const alumniRef = collection(db, "alumni");
+const col = collection(db,"alumni");
 
-const form = document.getElementById("alumniForm");
-const table = document.getElementById("alumniTable");
+let editId=null;
 
-// Load alumni
-async function loadAlumni() {
-  table.innerHTML = "";
-  const snapshot = await getDocs(alumniRef);
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    table.innerHTML += `
-      <tr>
-        <td>${data.name}</td>
-        <td>${data.company}</td>
-        <td>${data.designation}</td>
-        <td><a href="${data.linkedin}" target="_blank">Profile</a></td>
-        <td>
-          <button class="edit-btn" onclick="editAlumni('${docSnap.id}','${data.name}','${data.company}','${data.designation}','${data.linkedin}')">Edit</button>
-          <button class="action-btn" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
-        </td>
-      </tr>
-    `;
+async function load() {
+  const snap=await getDocs(col);
+  table.innerHTML="";
+  snap.forEach(d=>{
+    const a=d.data();
+    table.innerHTML+=`
+    <tr>
+      <td>${a.name}</td>
+      <td>${a.company}</td>
+      <td>
+        <button onclick="edit('${d.id}','${a.name}','${a.designation}','${a.company}','${a.linkedin}')">Edit</button>
+        <button onclick="del('${d.id}')">Delete</button>
+      </td>
+    </tr>`;
   });
 }
-loadAlumni();
 
-// Add / Update alumni
-form.addEventListener("submit", async e => {
+window.edit=(id,n,d,c,l)=>{
+  editId=id;
+  name.value=n;
+  designation.value=d;
+  company.value=c;
+  linkedin.value=l;
+};
+
+window.del=async(id)=>{
+  await deleteDoc(doc(db,"alumni",id));
+  load();
+};
+
+form.onsubmit=async e=>{
   e.preventDefault();
-
-  const id = document.getElementById("docId").value;
-  const data = {
-    name: name.value,
-    company: company.value,
-    designation: designation.value,
-    linkedin: linkedin.value
-  };
-
-  if (id) {
-    await updateDoc(doc(db, "alumni", id), data);
+  const data={name:name.value,designation:designation.value,company:company.value,linkedin:linkedin.value};
+  if(editId){
+    await updateDoc(doc(db,"alumni",editId),data);
+    editId=null;
   } else {
-    await addDoc(alumniRef, data);
+    await addDoc(col,data);
   }
-
   form.reset();
-  document.getElementById("docId").value = "";
-  loadAlumni();
-});
-
-// Delete alumni
-window.deleteAlumni = async id => {
-  if (confirm("Delete this alumni?")) {
-    await deleteDoc(doc(db, "alumni", id));
-    loadAlumni();
-  }
+  load();
 };
 
-// Edit alumni
-window.editAlumni = (id, n, c, d, l) => {
-  docId.value = id;
-  name.value = n;
-  company.value = c;
-  designation.value = d;
-  linkedin.value = l;
-};
+load();
 </script>
 
 </body>
