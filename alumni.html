@@ -2,108 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Alumni List | Alumni Connect</title>
+  <title>Alumni Directory | Alumni Connect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* ===== DO NOT CHANGE CSS ===== */
     body {
+      margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f4f6fb;
-      color: #1f2937;
+      background: #f6f8fc;
+      color: #111827;
     }
 
     header {
-      background: #1A2238;
-      padding: 18px 30px;
-      color: white;
-      font-size: 1.4rem;
+      background: white;
+      padding: 16px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+
+    header .logo {
+      font-size: 1.2rem;
       font-weight: 700;
+      color: #4f46e5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    header .actions a {
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+
+    .btn-outline {
+      border: 1px solid #d1d5db;
+      color: #111827;
+    }
+
+    .btn-primary {
+      background: #6366f1;
+      color: white;
     }
 
     .container {
-      max-width: 1100px;
-      margin: 40px auto;
+      max-width: 1200px;
+      margin: 30px auto;
       padding: 0 20px;
     }
 
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 25px;
-      color: #111827;
+    .hero {
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .alumni-grid {
+    .hero h2 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .hero p {
+      margin-top: 8px;
+      color: #6b7280;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .filters input {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      min-width: 220px;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 25px;
+      gap: 22px;
     }
 
-    .alumni-card {
+    .card {
       background: white;
-      padding: 22px;
-      border-radius: 14px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.2s;
     }
 
-    .alumni-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    .card:hover {
+      transform: translateY(-5px);
     }
 
-    .alumni-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #111827;
-    }
-
-    .alumni-role {
-      font-size: 0.95rem;
-      color: #374151;
-      margin-bottom: 4px;
-    }
-
-    .alumni-company {
-      font-size: 0.9rem;
-      color: #6b7280;
-      margin-bottom: 14px;
-    }
-
-    .linkedin-btn {
-      display: inline-block;
-      padding: 8px 14px;
-      background: #2563eb;
-      color: white;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.2s ease;
-    }
-
-    .linkedin-btn:hover {
-      background: #1e40af;
-    }
-
-    .loading {
-      text-align: center;
+    .card h3 {
+      margin: 0 0 6px;
       font-size: 1.1rem;
-      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .card p {
+      margin: 0;
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #6366f1;
+      font-weight: 500;
     }
 
     footer {
       text-align: center;
-      padding: 25px;
+      padding: 30px;
       font-size: 0.9rem;
       color: #6b7280;
     }
@@ -112,75 +143,100 @@
 
 <body>
 
-  <header>
-    Alumni Connect
-  </header>
+<header>
+  <div class="logo">🎓 Alumni Connect</div>
+  <div class="actions">
+    <a href="dashboard.html" class="btn-outline">← Dashboard</a>
+    <a href="dashboard.html" class="btn-primary">Home</a>
+  </div>
+</header>
 
-  <div class="container">
-    <h2>Our Alumni</h2>
+<div class="container">
 
-    <div id="loading" class="loading">Loading alumni...</div>
-
-    <div id="alumniGrid" class="alumni-grid"></div>
+  <div class="hero">
+    <div>
+      <h2>Alumni Directory</h2>
+      <p>Browse alumni and connect with professionals.</p>
+    </div>
+    <div id="count">0 found</div>
   </div>
 
-  <footer>
-    © 2025 Alumni Connect
-  </footer>
+  <div class="filters">
+    <input type="text" id="search" placeholder="Search name, company, role..." />
+  </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <div class="grid" id="alumniGrid">
+    <!-- Alumni cards injected here -->
+  </div>
 
-    // 🔴 YOUR FIREBASE CONFIG (same as student login)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-      authDomain: "fwd-a5a74.firebaseapp.com",
-      projectId: "fwd-a5a74",
-      storageBucket: "fwd-a5a74.appspot.com",
-      messagingSenderId: "611520933176",
-      appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
-    };
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+<footer>
+  © 2025 Alumni Connect
+</footer>
 
-    const alumniGrid = document.getElementById("alumniGrid");
-    const loadingText = document.getElementById("loading");
+<!-- ===== FIREBASE LOGIC ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    async function loadAlumni() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "alumni"));
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+    authDomain: "fwd-a5a74.firebaseapp.com",
+    projectId: "fwd-a5a74",
+    storageBucket: "fwd-a5a74.appspot.com",
+    messagingSenderId: "611520933176",
+    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+  };
 
-        loadingText.style.display = "none";
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
+  const grid = document.getElementById("alumniGrid");
+  const countEl = document.getElementById("count");
+  const searchInput = document.getElementById("search");
 
-          const card = document.createElement("div");
-          card.className = "alumni-card";
+  let alumniData = [];
 
-          card.innerHTML = `
-            <div class="alumni-name">${data.name}</div>
-            <div class="alumni-role">${data.designation}</div>
-            <div class="alumni-company">${data.company}</div>
-            <a href="${data.linkedin}" target="_blank" class="linkedin-btn">
-              View LinkedIn
-            </a>
-          `;
-
-          alumniGrid.appendChild(card);
-        });
-
-      } catch (error) {
-        loadingText.innerText = "Failed to load alumni data.";
-        console.error(error);
-      }
+  async function loadAlumni() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "alumni"));
+      alumniData = querySnapshot.docs.map(doc => doc.data());
+      render(alumniData);
+    } catch (e) {
+      grid.innerHTML = "<p>Failed to load alumni data.</p>";
     }
+  }
 
-    loadAlumni();
-  </script>
+  function render(list) {
+    grid.innerHTML = "";
+    countEl.textContent = `${list.length} found`;
+
+    list.forEach(a => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <h3>${a.name}</h3>
+        <p>${a.designation} — ${a.company}</p>
+        <span>View profile · LinkedIn</span>
+      `;
+      card.onclick = () => window.open(a.linkedin, "_blank");
+      grid.appendChild(card);
+    });
+  }
+
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.toLowerCase();
+    const filtered = alumniData.filter(a =>
+      a.name.toLowerCase().includes(q) ||
+      a.company.toLowerCase().includes(q) ||
+      a.designation.toLowerCase().includes(q)
+    );
+    render(filtered);
+  });
+
+  loadAlumni();
+</script>
 
 </body>
 </html>
