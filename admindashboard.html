@@ -1,71 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin – Alumni</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family:Poppins; background:#f5f7fb; padding:30px }
-    .card {
-      background:#fff; padding:15px; margin-bottom:15px;
-      border-radius:10px;
-    }
-    input, textarea { width:100%; padding:8px; margin:5px 0 }
-    button { margin-top:5px }
-  </style>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Alumni Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6fb;
+}
+
+header {
+  background: #1A2238;
+  color: white;
+  padding: 18px 30px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.container {
+  padding: 30px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-btn {
+  background: #2563eb;
+  color: white;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background: #f1f5f9;
+}
+
+.edit-btn {
+  background: #10b981;
+  color: white;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  margin-left: 5px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  width: 420px;
+  border-radius: 12px;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.close-btn {
+  background: #9ca3af;
+  color: white;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Admin – Edit Alumni</h2>
+<header>Admin Dashboard – Manage Alumni</header>
 
-<div id="list"></div>
+<div class="container">
+  <button class="add-btn" onclick="openAdd()">+ Add Alumni</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Company</th>
+        <th>Designation</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="alumniTable"></tbody>
+  </table>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="alumniModal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Add Alumni</h3>
+
+    <input id="name" placeholder="Name">
+    <input id="company" placeholder="Company">
+    <input id="designation" placeholder="Designation">
+    <input id="email" placeholder="Email">
+    <input id="batch" placeholder="Batch">
+    <input id="branch" placeholder="Branch">
+    <input id="linkedin" placeholder="LinkedIn URL">
+    <textarea id="about" placeholder="About"></textarea>
+
+    <button onclick="saveAlumni()" class="add-btn">Save</button>
+    <button onclick="closeModal()" class="close-btn">Cancel</button>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
+  projectId: "YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const snap = await getDocs(collection(db, "alumni"));
-const list = document.getElementById("list");
+const table = document.getElementById("alumniTable");
+const modal = document.getElementById("alumniModal");
+let editId = null;
 
-snap.forEach(d => {
-  const a = d.data();
-  list.innerHTML += `
-    <div class="card">
-      <input value="${a.name || ""}" id="name-${d.id}">
-      <input value="${a.company || ""}" id="company-${d.id}">
-      <input value="${a.designation || ""}" id="designation-${d.id}">
-      <input value="${a.email || ""}" id="email-${d.id}">
-      <input value="${a.batch || ""}" id="batch-${d.id}">
-      <input value="${a.branch || ""}" id="branch-${d.id}">
-      <input value="${a.linkedin || ""}" id="linkedin-${d.id}">
-      <textarea id="about-${d.id}">${a.about || ""}</textarea>
-      <button onclick="save('${d.id}')">Save</button>
-    </div>
-  `;
-});
-
-window.save = async (id) => {
-  await updateDoc(doc(db, "alumni", id), {
-    name: document.getElementById(`name-${id}`).value,
-    company: document.getElementById(`company-${id}`).value,
-    designation: document.getElementById(`designation-${id}`).value,
-    email: document.getElementById(`email-${id}`).value,
-    batch: document.getElementById(`batch-${id}`).value,
-    branch: document.getElementById(`branch-${id}`).value,
-    linkedin: document.getElementById(`linkedin-${id}`).value,
-    about: document.getElementById(`about-${id}`).value
+async function loadAlumni() {
+  table.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "alumni"));
+  snapshot.forEach(docSnap => {
+    const d = docSnap.data();
+    table.innerHTML += `
+      <tr>
+        <td>${d.name || ""}</td>
+        <td>${d.company || ""}</td>
+        <td>${d.designation || ""}</td>
+        <td>
+          <button class="edit-btn" onclick="editAlumni('${docSnap.id}')">Edit</button>
+          <button class="delete-btn" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+        </td>
+      </tr>
+    `;
   });
-  alert("Updated");
+}
+
+window.openAdd = () => {
+  editId = null;
+  modal.style.display = "flex";
 };
+
+window.closeModal = () => {
+  modal.style.display = "none";
+};
+
+window.saveAlumni = async () => {
+  const data = {
+    name: name.value,
+    company: company.value,
+    designation: designation.value,
+    email: email.value,
+    batch: batch.value,
+    branch: branch.value,
+    linkedin: linkedin.value,
+    about: about.value
+  };
+
+  if (editId) {
+    await updateDoc(doc(db, "alumni", editId), data);
+  } else {
+    await addDoc(collection(db, "alumni"), data);
+  }
+
+  closeModal();
+  loadAlumni();
+};
+
+window.editAlumni = async (id) => {
+  editId = id;
+  const snap = await getDocs(collection(db, "alumni"));
+  snap.forEach(d => {
+    if (d.id === id) {
+      const a = d.data();
+      name.value = a.name || "";
+      company.value = a.company || "";
+      designation.value = a.designation || "";
+      email.value = a.email || "";
+      batch.value = a.batch || "";
+      branch.value = a.branch || "";
+      linkedin.value = a.linkedin || "";
+      about.value = a.about || "";
+    }
+  });
+  modal.style.display = "flex";
+};
+
+window.deleteAlumni = async (id) => {
+  if (confirm("Delete this alumni?")) {
+    await deleteDoc(doc(db, "alumni", id));
+    loadAlumni();
+  }
+};
+
+loadAlumni();
 </script>
+
 </body>
 </html>
