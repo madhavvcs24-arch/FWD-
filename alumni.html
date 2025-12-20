@@ -5,102 +5,86 @@
   <title>Alumni Directory | Alumni Connect</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f5f7fb;
+      background: #f6f8fc;
       color: #1f2937;
     }
 
     header {
       background: #ffffff;
-      padding: 16px 30px;
+      padding: 15px 30px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    header h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      display: flex;
       align-items: center;
-      gap: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .nav-btns a {
-      text-decoration: none;
-      padding: 8px 14px;
+    header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #4f46e5;
+    }
+
+    .btn {
+      padding: 8px 16px;
       border-radius: 8px;
-      font-weight: 500;
-      margin-left: 10px;
-    }
-
-    .btn-outline {
-      border: 1px solid #d1d5db;
-      color: #111827;
-    }
-
-    .btn-primary {
+      border: none;
       background: #6366f1;
       color: white;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
     }
 
     main {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 40px auto;
       padding: 0 20px;
     }
 
-    .hero {
-      background: #eef2ff;
-      border-radius: 18px;
-      padding: 40px;
+    .banner {
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      padding: 30px;
+      border-radius: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
     }
 
-    .hero h2 {
+    .banner h1 {
       margin: 0;
-      font-size: 1.8rem;
-      font-weight: 700;
+      font-size: 2rem;
     }
 
-    .hero p {
-      margin-top: 8px;
-      color: #4b5563;
+    .search-box {
+      margin: 30px 0;
+      max-width: 300px;
     }
 
-    .search-bar {
-      margin-bottom: 30px;
-    }
-
-    .search-bar input {
+    .search-box input {
       width: 100%;
-      max-width: 320px;
-      padding: 12px 16px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       border: 1px solid #d1d5db;
       font-size: 0.95rem;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 25px;
     }
 
     .card {
       background: white;
-      padding: 24px;
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
       transition: transform 0.2s;
     }
 
@@ -109,47 +93,29 @@
     }
 
     .card h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
+      margin: 0 0 10px;
+      font-size: 1.2rem;
     }
 
     .card p {
-      margin: 8px 0;
+      margin: 6px 0;
+      font-size: 0.95rem;
       color: #4b5563;
-      font-size: 0.9rem;
-    }
-
-    .batch {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #6366f1;
-      font-size: 0.75rem;
-      font-weight: 600;
     }
 
     .card a {
-      display: block;
-      margin-top: 14px;
-      font-size: 0.85rem;
-      color: #6366f1;
+      display: inline-block;
+      margin-top: 12px;
+      color: #2563eb;
+      font-weight: 600;
       text-decoration: none;
-      font-weight: 500;
     }
 
     footer {
+      margin: 60px 0 20px;
       text-align: center;
-      padding: 30px;
-      font-size: 0.85rem;
       color: #6b7280;
-    }
-
-    .error {
-      color: #ef4444;
-      margin-top: 20px;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -157,36 +123,33 @@
 <body>
 
 <header>
-  <h1>🎓 Alumni Connect</h1>
-  <div class="nav-btns">
-    <a href="dashboard.html" class="btn-outline">← Dashboard</a>
-    <a href="index.html" class="btn-primary">Home</a>
-  </div>
+  <h2>🎓 Alumni Connect</h2>
+  <a href="dashboard.html" class="btn">← Dashboard</a>
 </header>
 
 <main>
-  <div class="hero">
+  <div class="banner">
     <div>
-      <h2>Alumni Directory</h2>
+      <h1>Alumni Directory</h1>
       <p>Browse alumni and connect with professionals.</p>
     </div>
     <div id="count">0 found</div>
   </div>
 
-  <div class="search-bar">
+  <div class="search-box">
     <input type="text" id="search" placeholder="Search name, company, role..." />
   </div>
 
-  <div class="grid" id="alumniGrid"></div>
+  <div id="alumniGrid" class="grid"></div>
 
-  <div id="error" class="error"></div>
+  <p id="error" style="color:red; display:none;">Failed to load alumni data.</p>
 </main>
 
 <footer>
   © 2025 Alumni Connect
 </footer>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -194,7 +157,10 @@
   const firebaseConfig = {
     apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
     authDomain: "fwd-a5a74.firebaseapp.com",
-    projectId: "fwd-a5a74"
+    projectId: "fwd-a5a74",
+    storageBucket: "fwd-a5a74.appspot.com",
+    messagingSenderId: "611520933176",
+    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -205,41 +171,38 @@
   const errorEl = document.getElementById("error");
   const searchInput = document.getElementById("search");
 
-  let alumniList = [];
+  let alumniData = [];
 
   async function loadAlumni() {
     try {
       const snapshot = await getDocs(collection(db, "alumni"));
-      alumniList = snapshot.docs.map(doc => doc.data());
-      render(alumniList);
+      alumniData = snapshot.docs.map(doc => doc.data());
+      render(alumniData);
     } catch (e) {
-      errorEl.textContent = "Failed to load alumni data.";
       console.error(e);
+      errorEl.style.display = "block";
     }
   }
 
-  function render(list) {
+  function render(data) {
     grid.innerHTML = "";
-    countEl.textContent = `${list.length} found`;
+    countEl.innerText = `${data.length} found`;
 
-    list.forEach(a => {
+    data.forEach(a => {
       const card = document.createElement("div");
       card.className = "card";
-
       card.innerHTML = `
         <h3>${a.name}</h3>
         <p>${a.designation} — ${a.company}</p>
-        <span class="batch">Alumni</span>
-        <a href="${a.linkedin}" target="_blank">View profile · LinkedIn</a>
+        <a href="${a.linkedin}" target="_blank">View LinkedIn</a>
       `;
-
       grid.appendChild(card);
     });
   }
 
   searchInput.addEventListener("input", e => {
     const q = e.target.value.toLowerCase();
-    const filtered = alumniList.filter(a =>
+    const filtered = alumniData.filter(a =>
       a.name.toLowerCase().includes(q) ||
       a.company.toLowerCase().includes(q) ||
       a.designation.toLowerCase().includes(q)
