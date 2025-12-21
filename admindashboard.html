@@ -4,130 +4,11 @@
 <meta charset="UTF-8" />
 <title>Admin Dashboard – Manage Alumni</title>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  addDoc,
-  updateDoc,
-  deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-  authDomain: "fwd-a5a74.firebaseapp.com",
-  projectId: "fwd-a5a74"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const tbody = document.getElementById("alumniTableBody");
-const modal = document.getElementById("modal");
-const form = document.getElementById("alumniForm");
-
-let editId = null;
-
-/* ---------------- LOAD ALUMNI ---------------- */
-async function loadAlumni() {
-  tbody.innerHTML = "";
-  const snapshot = await getDocs(collection(db, "alumni"));
-
-  snapshot.forEach(docSnap => {
-    const a = docSnap.data();
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${a.name || ""}</td>
-      <td>${a.company || ""}</td>
-      <td>${a.designation || ""}</td>
-      <td>
-        <button onclick="editAlumni('${docSnap.id}')">Edit</button>
-        <button onclick="deleteAlumni('${docSnap.id}')">Delete</button>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-loadAlumni();
-
-/* ---------------- EDIT ---------------- */
-window.editAlumni = async (id) => {
-  editId = id;
-  const ref = doc(db, "alumni", id);
-  const snap = await getDocs(collection(db, "alumni"));
-
-  snap.forEach(d => {
-    if (d.id === id) {
-      const a = d.data();
-      form.name.value = a.name || "";
-      form.company.value = a.company || "";
-      form.designation.value = a.designation || "";
-      form.email.value = a.email || "";
-      form.batch.value = a.batch || "";
-      form.branch.value = a.branch || "";
-      form.linkedin.value = a.linkedin || "";
-      form.about.value = a.about || "";
-    }
-  });
-
-  modal.style.display = "flex";
-};
-
-/* ---------------- SAVE ---------------- */
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const data = {
-    name: form.name.value,
-    company: form.company.value,
-    designation: form.designation.value,
-    email: form.email.value,
-    batch: form.batch.value,
-    branch: form.branch.value,
-    linkedin: form.linkedin.value,
-    about: form.about.value
-  };
-
-  if (editId) {
-    await updateDoc(doc(db, "alumni", editId), data);
-  } else {
-    await addDoc(collection(db, "alumni"), data);
-  }
-
-  modal.style.display = "none";
-  editId = null;
-  form.reset();
-  loadAlumni();
-});
-
-/* ---------------- DELETE ---------------- */
-window.deleteAlumni = async (id) => {
-  if (confirm("Delete this alumni?")) {
-    await deleteDoc(doc(db, "alumni", id));
-    loadAlumni();
-  }
-};
-
-/* ---------------- ADD ---------------- */
-window.openAdd = () => {
-  editId = null;
-  form.reset();
-  modal.style.display = "flex";
-};
-
-window.closeModal = () => modal.style.display = "none";
-</script>
-
 <style>
 body { font-family: Arial; background:#f5f7fb; }
 header { background:#1e2a44; color:white; padding:15px; }
-table { width:100%; background:white; border-collapse:collapse; }
-th,td { padding:12px; border-bottom:1px solid #ddd; }
+table { width:100%; background:white; border-collapse:collapse; margin-top:15px; }
+th,td { padding:12px; border-bottom:1px solid #ddd; text-align:left; }
 button { padding:6px 12px; margin-right:6px; cursor:pointer; }
 #modal {
   display:none; position:fixed; inset:0;
@@ -142,6 +23,7 @@ input,textarea { width:100%; margin-bottom:10px; padding:8px; }
 </head>
 
 <body>
+
 <header>Admin Dashboard – Manage Alumni</header>
 
 <button onclick="openAdd()">+ Add Alumni</button>
@@ -149,15 +31,19 @@ input,textarea { width:100%; margin-bottom:10px; padding:8px; }
 <table>
 <thead>
 <tr>
-<th>Name</th><th>Company</th><th>Designation</th><th>Actions</th>
+<th>Name</th>
+<th>Company</th>
+<th>Designation</th>
+<th>Actions</th>
 </tr>
 </thead>
 <tbody id="alumniTableBody"></tbody>
 </table>
 
+<!-- MODAL -->
 <div id="modal">
   <div class="modal-box">
-    <h3>Edit Alumni</h3>
+    <h3 id="modalTitle">Edit Alumni</h3>
     <form id="alumniForm">
       <input name="name" placeholder="Name" />
       <input name="company" placeholder="Company" />
@@ -172,5 +58,130 @@ input,textarea { width:100%; margin-bottom:10px; padding:8px; }
     </form>
   </div>
 </div>
+
+<!-- FIREBASE LOGIC -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+    authDomain: "fwd-a5a74.firebaseapp.com",
+    projectId: "fwd-a5a74"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const tbody = document.getElementById("alumniTableBody");
+  const modal = document.getElementById("modal");
+  const form = document.getElementById("alumniForm");
+  const modalTitle = document.getElementById("modalTitle");
+
+  let editId = null;
+
+  /* LOAD ALUMNI */
+  async function loadAlumni() {
+    tbody.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "alumni"));
+
+    snapshot.forEach(docSnap => {
+      const a = docSnap.data();
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${a.name || ""}</td>
+        <td>${a.company || ""}</td>
+        <td>${a.designation || ""}</td>
+        <td>
+          <button onclick="editAlumni('${docSnap.id}')">Edit</button>
+          <button onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  loadAlumni();
+
+  /* ADD */
+  window.openAdd = () => {
+    editId = null;
+    modalTitle.innerText = "Add Alumni";
+    form.reset();
+    modal.style.display = "flex";
+  };
+
+  /* EDIT */
+  window.editAlumni = async (id) => {
+    editId = id;
+    modalTitle.innerText = "Edit Alumni";
+
+    const snap = await getDoc(doc(db, "alumni", id));
+    if (!snap.exists()) return;
+
+    const a = snap.data();
+    form.name.value = a.name || "";
+    form.company.value = a.company || "";
+    form.designation.value = a.designation || "";
+    form.email.value = a.email || "";
+    form.batch.value = a.batch || "";
+    form.branch.value = a.branch || "";
+    form.linkedin.value = a.linkedin || "";
+    form.about.value = a.about || "";
+
+    modal.style.display = "flex";
+  };
+
+  /* SAVE */
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      name: form.name.value,
+      company: form.company.value,
+      designation: form.designation.value,
+      email: form.email.value,
+      batch: form.batch.value,
+      branch: form.branch.value,
+      linkedin: form.linkedin.value,
+      about: form.about.value
+    };
+
+    if (editId) {
+      await updateDoc(doc(db, "alumni", editId), data);
+    } else {
+      await addDoc(collection(db, "alumni"), data);
+    }
+
+    modal.style.display = "none";
+    editId = null;
+    form.reset();
+    loadAlumni();
+  });
+
+  /* DELETE */
+  window.deleteAlumni = async (id) => {
+    if (confirm("Delete this alumni?")) {
+      await deleteDoc(doc(db, "alumni", id));
+      loadAlumni();
+    }
+  };
+
+  window.closeModal = () => modal.style.display = "none";
+});
+</script>
+
 </body>
 </html>
