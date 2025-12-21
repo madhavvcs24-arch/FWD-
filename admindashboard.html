@@ -3,186 +3,94 @@
 <head>
 <meta charset="UTF-8" />
 <title>Admin Dashboard – Manage Alumni</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-body {
-  margin: 0;
-  font-family: Poppins, sans-serif;
-  background: #f5f7fb;
-}
-header {
-  background: linear-gradient(135deg, #1f2a44, #24355f);
-  color: white;
-  padding: 18px 30px;
-  font-size: 22px;
-  font-weight: 600;
-}
-.container {
-  padding: 30px;
-}
-button {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-.add-btn {
-  background: #2563eb;
-  color: white;
-  margin-bottom: 15px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-th, td {
-  padding: 14px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-th {
-  background: #f1f5f9;
-}
-.action-btn {
-  margin-right: 6px;
-}
-.edit {
-  background: #22c55e;
-  color: white;
-}
-.delete {
-  background: #ef4444;
-  color: white;
-}
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: white;
-  padding: 25px;
-  width: 420px;
-  border-radius: 12px;
-}
-.modal-content input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.modal-content textarea {
-  resize: none;
-  height: 70px;
-}
-</style>
-</head>
-
-<body>
-
-<header>Admin Dashboard – Manage Alumni</header>
-
-<div class="container">
-  <button class="add-btn" onclick="openAdd()">+ Add Alumni</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Company</th>
-        <th>Designation</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="alumniTable"></tbody>
-  </table>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h3 id="modalTitle">Add Alumni</h3>
-    <input id="name" placeholder="Name">
-    <input id="company" placeholder="Company">
-    <input id="designation" placeholder="Designation">
-    <input id="email" placeholder="Email">
-    <input id="batch" placeholder="Batch">
-    <input id="branch" placeholder="Branch">
-    <input id="linkedin" placeholder="LinkedIn URL">
-    <textarea id="about" placeholder="About"></textarea>
-    <button class="add-btn" onclick="saveAlumni()">Save</button>
-    <button onclick="closeModal()">Cancel</button>
-  </div>
-</div>
-
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, getDocs,
-  addDoc, doc, updateDoc, deleteDoc
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
   authDomain: "fwd-a5a74.firebaseapp.com",
-  projectId: "fwd-a5a74",
+  projectId: "fwd-a5a74"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const tbody = document.getElementById("alumniTableBody");
+const modal = document.getElementById("modal");
+const form = document.getElementById("alumniForm");
+
 let editId = null;
 
+/* ---------------- LOAD ALUMNI ---------------- */
 async function loadAlumni() {
-  const table = document.getElementById("alumniTable");
-  table.innerHTML = "";
+  tbody.innerHTML = "";
   const snapshot = await getDocs(collection(db, "alumni"));
 
   snapshot.forEach(docSnap => {
-    const d = docSnap.data();
-    table.innerHTML += `
-      <tr>
-        <td>${d.name || ""}</td>
-        <td>${d.company || ""}</td>
-        <td>${d.designation || ""}</td>
-        <td>
-          <button class="action-btn edit" onclick="editAlumni('${docSnap.id}')">Edit</button>
-          <button class="action-btn delete" onclick="deleteAlumni('${docSnap.id}')">Delete</button>
-        </td>
-      </tr>
+    const a = docSnap.data();
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${a.name || ""}</td>
+      <td>${a.company || ""}</td>
+      <td>${a.designation || ""}</td>
+      <td>
+        <button onclick="editAlumni('${docSnap.id}')">Edit</button>
+        <button onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+      </td>
     `;
+
+    tbody.appendChild(tr);
   });
 }
+loadAlumni();
 
-window.openAdd = () => {
-  editId = null;
-  document.getElementById("modalTitle").innerText = "Add Alumni";
-  document.querySelectorAll("#modal input, #modal textarea").forEach(e => e.value = "");
-  document.getElementById("modal").style.display = "flex";
+/* ---------------- EDIT ---------------- */
+window.editAlumni = async (id) => {
+  editId = id;
+  const ref = doc(db, "alumni", id);
+  const snap = await getDocs(collection(db, "alumni"));
+
+  snap.forEach(d => {
+    if (d.id === id) {
+      const a = d.data();
+      form.name.value = a.name || "";
+      form.company.value = a.company || "";
+      form.designation.value = a.designation || "";
+      form.email.value = a.email || "";
+      form.batch.value = a.batch || "";
+      form.branch.value = a.branch || "";
+      form.linkedin.value = a.linkedin || "";
+      form.about.value = a.about || "";
+    }
+  });
+
+  modal.style.display = "flex";
 };
 
-window.closeModal = () => {
-  document.getElementById("modal").style.display = "none";
-};
+/* ---------------- SAVE ---------------- */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-window.saveAlumni = async () => {
   const data = {
-    name: name.value,
-    company: company.value,
-    designation: designation.value,
-    email: email.value,
-    batch: batch.value,
-    branch: branch.value,
-    linkedin: linkedin.value,
-    about: about.value
+    name: form.name.value,
+    company: form.company.value,
+    designation: form.designation.value,
+    email: form.email.value,
+    batch: form.batch.value,
+    branch: form.branch.value,
+    linkedin: form.linkedin.value,
+    about: form.about.value
   };
 
   if (editId) {
@@ -190,26 +98,14 @@ window.saveAlumni = async () => {
   } else {
     await addDoc(collection(db, "alumni"), data);
   }
-  closeModal();
+
+  modal.style.display = "none";
+  editId = null;
+  form.reset();
   loadAlumni();
-};
+});
 
-window.editAlumni = async (id) => {
-  editId = id;
-  document.getElementById("modalTitle").innerText = "Edit Alumni";
-  const snap = await getDocs(collection(db, "alumni"));
-  snap.forEach(d => {
-    if (d.id === id) {
-      Object.keys(d.data()).forEach(k => {
-        if (document.getElementById(k)) {
-          document.getElementById(k).value = d.data()[k];
-        }
-      });
-    }
-  });
-  document.getElementById("modal").style.display = "flex";
-};
-
+/* ---------------- DELETE ---------------- */
 window.deleteAlumni = async (id) => {
   if (confirm("Delete this alumni?")) {
     await deleteDoc(doc(db, "alumni", id));
@@ -217,8 +113,64 @@ window.deleteAlumni = async (id) => {
   }
 };
 
-loadAlumni();
+/* ---------------- ADD ---------------- */
+window.openAdd = () => {
+  editId = null;
+  form.reset();
+  modal.style.display = "flex";
+};
+
+window.closeModal = () => modal.style.display = "none";
 </script>
 
+<style>
+body { font-family: Arial; background:#f5f7fb; }
+header { background:#1e2a44; color:white; padding:15px; }
+table { width:100%; background:white; border-collapse:collapse; }
+th,td { padding:12px; border-bottom:1px solid #ddd; }
+button { padding:6px 12px; margin-right:6px; cursor:pointer; }
+#modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.5);
+  justify-content:center; align-items:center;
+}
+.modal-box {
+  background:white; padding:20px; width:420px;
+}
+input,textarea { width:100%; margin-bottom:10px; padding:8px; }
+</style>
+</head>
+
+<body>
+<header>Admin Dashboard – Manage Alumni</header>
+
+<button onclick="openAdd()">+ Add Alumni</button>
+
+<table>
+<thead>
+<tr>
+<th>Name</th><th>Company</th><th>Designation</th><th>Actions</th>
+</tr>
+</thead>
+<tbody id="alumniTableBody"></tbody>
+</table>
+
+<div id="modal">
+  <div class="modal-box">
+    <h3>Edit Alumni</h3>
+    <form id="alumniForm">
+      <input name="name" placeholder="Name" />
+      <input name="company" placeholder="Company" />
+      <input name="designation" placeholder="Designation" />
+      <input name="email" placeholder="Email" />
+      <input name="batch" placeholder="Batch" />
+      <input name="branch" placeholder="Branch" />
+      <input name="linkedin" placeholder="LinkedIn" />
+      <textarea name="about" placeholder="About"></textarea>
+      <button type="submit">Save</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+  </div>
+</div>
 </body>
 </html>
