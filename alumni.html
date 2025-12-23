@@ -6,56 +6,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  margin: 0;
+:root {
+  --primary: #6366f1;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---------- HEADER ---------- */
 header {
-  padding: 15px 30px;
   background: white;
+  padding: 14px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
+header .logo {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+header .actions a {
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+header .actions .dashboard {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+header .actions .home {
+  background: var(--primary);
+  color: white;
+}
+
+/* ---------- MAIN ---------- */
 main {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
   padding: 30px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-h1 {
-  text-align: center;
+.hero h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
 }
 
-#search {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 30px;
+.hero p {
+  margin: 0;
+  color: var(--muted);
 }
 
+.count {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- FILTERS ---------- */
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.filters input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+/* ---------- GRID ---------- */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
 }
 
+/* ---------- CARD ---------- */
 .card {
-  background: white;
+  background: var(--card);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.1);
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .card h3 {
-  margin: 0 0 5px;
+  margin: 0 0 6px;
+  font-size: 18px;
 }
 
 .card p {
-  margin: 2px 0;
-  color: #555;
+  margin: 3px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  color: var(--muted);
+  font-size: 14px;
 }
 </style>
 </head>
@@ -63,17 +165,36 @@ h1 {
 <body>
 
 <header>
-  <strong>Alumni Connect</strong>
-  <a href="dashboard.html">← Back</a>
+  <div class="logo">🎓 Alumni Connect</div>
+  <div class="actions">
+    <a href="dashboard.html" class="dashboard">Dashboard</a>
+    <a href="index.html" class="home">Home</a>
+  </div>
 </header>
 
 <main>
-  <h1>Alumni</h1>
-  <input id="search" placeholder="Search by name / company">
+
+  <div class="hero">
+    <div>
+      <h1>Alumni Directory</h1>
+      <p>Browse alumni and connect with professionals.</p>
+    </div>
+    <div class="count" id="count">0 found</div>
+  </div>
+
+  <div class="filters">
+    <input id="search" placeholder="Search name, company, role..." />
+  </div>
 
   <div class="grid" id="list"></div>
+
 </main>
 
+<footer>
+  © 2025 Alumni Connect
+</footer>
+
+<!-- ---------- FIREBASE LOGIC (UNCHANGED) ---------- -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -89,6 +210,7 @@ const db = getFirestore(app);
 
 const list = document.getElementById("list");
 const search = document.getElementById("search");
+const count = document.getElementById("count");
 
 let alumni = [];
 
@@ -100,10 +222,13 @@ async function loadAlumni() {
 
 function render(data) {
   list.innerHTML = "";
+  count.textContent = `${data.length} found`;
+
   data.forEach(a => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
+      <div class="avatar">${(a.name || "A")[0]}</div>
       <h3>${a.name || ""}</h3>
       <p>${a.designation || ""}</p>
       <p>${a.company || ""}</p>
@@ -119,7 +244,8 @@ search.addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
   render(alumni.filter(a =>
     (a.name || "").toLowerCase().includes(q) ||
-    (a.company || "").toLowerCase().includes(q)
+    (a.company || "").toLowerCase().includes(q) ||
+    (a.designation || "").toLowerCase().includes(q)
   ));
 });
 
