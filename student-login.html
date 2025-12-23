@@ -47,6 +47,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       text-align: center;
       width: 360px;
+      position: relative;
     }
 
     input {
@@ -91,10 +92,9 @@
       font-size: 0.9rem;
     }
 
-    .link a, .link span {
+    .link a {
       color: #2563eb;
       font-weight: 600;
-      cursor: pointer;
       text-decoration: none;
     }
 
@@ -102,6 +102,30 @@
       color: #ef4444;
       display: none;
       margin-bottom: 10px;
+    }
+
+    /* ===== SPINNER ===== */
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 6px solid #e5e7eb;
+      border-top: 6px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     @media(max-width:900px) {
@@ -112,6 +136,11 @@
 </head>
 
 <body>
+
+<!-- LOADER -->
+<div class="loader-overlay" id="loader">
+  <div class="spinner"></div>
+</div>
 
 <div class="left">
   <img src="https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg">
@@ -125,7 +154,6 @@
 
     <div id="error-message"></div>
 
-    <!-- EMAIL / PASSWORD LOGIN -->
     <form id="loginForm">
       <input type="email" id="email" placeholder="College Email" required />
       <input type="password" id="password" placeholder="Password" required />
@@ -134,10 +162,8 @@
 
     <div class="divider">OR</div>
 
-    <!-- GOOGLE LOGIN -->
     <button class="google-btn" onclick="googleLogin()">Login with Google</button>
 
-    <!-- SIGN UP KEPT -->
     <div class="link">
       Don't have an account? <a href="signup.html">Sign Up</a>
     </div>
@@ -166,21 +192,28 @@
 
   const domain = "@bmsce.ac.in";
   const errorEl = document.getElementById("error-message");
+  const loader = document.getElementById("loader");
 
   function showError(msg) {
+    loader.style.display = "none";
     errorEl.innerText = msg;
     errorEl.style.display = "block";
   }
 
+  function showLoader() {
+    loader.style.display = "flex";
+  }
+
   // GOOGLE LOGIN
   window.googleLogin = async () => {
+    showLoader();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
       if (!user.email.endsWith(domain)) {
-        showError("Only BMSCE email allowed");
         await auth.signOut();
+        showError("Only BMSCE email allowed");
         return;
       }
 
@@ -191,7 +224,7 @@
       }, { merge: true });
 
       window.location.href = "./dashboard.html";
-    } catch (err) {
+    } catch {
       showError("Google login failed");
     }
   };
@@ -200,6 +233,7 @@
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     errorEl.style.display = "none";
+    showLoader();
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
