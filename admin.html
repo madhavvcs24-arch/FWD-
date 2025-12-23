@@ -20,7 +20,7 @@
 
         .left-side {
             width: 50%;
-            background: #2563eb; /* Blue BG */
+            background: #2563eb;
             color: white;
             display: flex;
             flex-direction: column;
@@ -153,10 +153,10 @@
             <div id="error" class="error"></div>
 
             <label>Email</label>
-            <input type="email" id="email" placeholder="admin@college.edu">
+            <input type="email" id="email" placeholder="Admin Email" />
 
             <label>Password</label>
-            <input type="password" id="password" placeholder="Enter password">
+            <input type="password" id="password" placeholder="Password" />
 
             <button class="btn" onclick="adminLogin()">Sign In</button>
 
@@ -168,12 +168,12 @@
 
     <script>
         function adminLogin() {
-            const email = document.getElementById("email").value;
+            const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
             const errorBox = document.getElementById("error");
 
-            if (email === "admin@college.edu" && password === "admin123") {
-                // GitHub Pages safe redirect
+            // ✅ UPDATED ADMIN CREDENTIALS
+            if (email === "admin@bmsce.ac.in" && password === "admin123") {
                 window.location.href = "./admindashboard.html";
             } else {
                 errorBox.innerText = "Invalid admin credentials";
