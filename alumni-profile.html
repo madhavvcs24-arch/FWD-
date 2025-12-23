@@ -208,7 +208,6 @@
 
 </div>
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -233,44 +232,49 @@
     location.href = "alumni.html";
   }
 
-  const docRef = doc(db, "alumni", alumniId);
-  const snap = await getDoc(docRef);
+  const cacheKey = `alumni_${alumniId}`;
+  let data = sessionStorage.getItem(cacheKey);
 
-  if (!snap.exists()) {
-    alert("Alumni not found");
-    location.href = "alumni.html";
+  if (data) {
+    render(JSON.parse(data));
+  } else {
+    const snap = await getDoc(doc(db, "alumni", alumniId));
+    if (!snap.exists()) {
+      alert("Alumni not found");
+      location.href = "alumni.html";
+    }
+    data = snap.data();
+    sessionStorage.setItem(cacheKey, JSON.stringify(data));
+    render(data);
   }
 
-  const d = snap.data();
+  function render(d) {
+    document.getElementById("name").textContent = d.name || "";
+    document.getElementById("designation").textContent = d.designation || "";
+    document.getElementById("company").textContent = d.company || "";
+    document.getElementById("company2").textContent = d.company || "";
+    document.getElementById("batch").textContent = d.batch || "";
+    document.getElementById("branch").textContent = d.branch || "";
+    document.getElementById("role").textContent = d.designation || "";
+    document.getElementById("about").textContent = d.about || "—";
+    document.getElementById("email").textContent = d.email || "";
 
-  // Safe rendering (NO ERRORS if missing)
-  document.getElementById("name").textContent = d.name || "";
-  document.getElementById("designation").textContent = d.designation || "";
-  document.getElementById("company").textContent = d.company || "";
-  document.getElementById("company2").textContent = d.company || "";
-  document.getElementById("batch").textContent = d.batch || "";
-  document.getElementById("branch").textContent = d.branch || "";
-  document.getElementById("role").textContent = d.designation || "";
-  document.getElementById("about").textContent = d.about || "—";
-  document.getElementById("email").textContent = d.email || "";
+    document.getElementById("avatar").textContent =
+      d.name ? d.name.charAt(0).toUpperCase() : "A";
 
-  document.getElementById("avatar").textContent =
-    d.name ? d.name.charAt(0).toUpperCase() : "A";
+    if (d.email) {
+      document.getElementById("emailBtn").href = `mailto:${d.email}`;
+    } else {
+      document.getElementById("emailBtn").style.display = "none";
+    }
 
-  if (d.email) {
-    document.getElementById("emailBtn").href = `mailto:${d.email}`;
-  } else {
-    document.getElementById("emailBtn").style.display = "none";
-  }
-
-  if (d.linkedin) {
-    document.getElementById("linkedinBtn").href = d.linkedin;
-  } else {
-    document.getElementById("linkedinBtn").style.display = "none";
+    if (d.linkedin) {
+      document.getElementById("linkedinBtn").href = d.linkedin;
+    } else {
+      document.getElementById("linkedinBtn").style.display = "none";
+    }
   }
 </script>
 
 </body>
 </html>
-
- 
