@@ -1,79 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Alumni Directory</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<title>Alumni Directory | Alumni Connect</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+* { box-sizing: border-box; }
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fb;
   margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fb;
 }
 
+/* ---------- HEADER ---------- */
 header {
-  padding: 15px 30px;
-  background: white;
+  background: #fff;
+  padding: 14px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+header .logo {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+header .nav a {
+  margin-left: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.nav .dashboard { color:#333; border:1px solid #ddd; }
+.nav .home { background:#6366f1; color:#fff; }
+
+/* ---------- HERO ---------- */
+.hero {
+  margin: 30px;
+  background: linear-gradient(135deg,#eef2ff,#f8fafc);
+  border-radius: 20px;
+  padding: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+.hero h1 { margin: 0; }
+.hero p { margin: 6px 0 0; color:#555; }
+.count { font-weight: 600; }
 
-main {
-  padding: 30px;
+/* ---------- FILTERS ---------- */
+.filters {
+  margin: 0 30px 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.filters input, .filters select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: .95rem;
 }
 
-h1 {
-  text-align: center;
-}
-
-#search {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 30px;
-}
-
+/* ---------- GRID ---------- */
 .grid {
+  padding: 0 30px 40px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap: 22px;
 }
 
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform .2s;
+}
+.card:hover { transform: translateY(-4px); }
+.card h3 { margin: 0 0 6px; }
+.card p { margin: 2px 0; color:#555; }
+.badge {
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 12px;
+  background:#eef2ff;
+  color:#4338ca;
+  border-radius:999px;
+  font-size:.85rem;
 }
 
-.card h3 {
-  margin: 0 0 5px;
+/* ---------- LOADER ---------- */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 }
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #e5e7eb;
+  border-top: 5px solid #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.card p {
-  margin: 2px 0;
-  color: #555;
+/* ---------- FOOTER ---------- */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #666;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOADER -->
+<div id="loader"><div class="spinner"></div></div>
+
 <header>
-  <strong>Alumni Connect</strong>
-  <a href="dashboard.html">← Back</a>
+  <div class="logo">🎓 Alumni Connect</div>
+  <div class="nav">
+    <a class="dashboard" href="dashboard.html">← Dashboard</a>
+    <a class="home" href="home.html">Home</a>
+  </div>
 </header>
 
-<main>
-  <h1>Alumni</h1>
-  <input id="search" placeholder="Search by name / company">
+<section class="hero">
+  <div>
+    <h1>Alumni Directory</h1>
+    <p>Browse alumni by batch, company or role.</p>
+  </div>
+  <div class="count"><span id="count">0</span> found</div>
+</section>
 
-  <div class="grid" id="list"></div>
-</main>
+<section class="filters">
+  <input id="search" placeholder="Search name, company, role..." />
+</section>
 
+<section class="grid" id="grid"></section>
+
+<footer>© 2025 Alumni Connect</footer>
+
+<!-- FIREBASE + LOGIC -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -87,67 +167,58 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const list = document.getElementById("list");
+const grid = document.getElementById("grid");
 const search = document.getElementById("search");
+const countEl = document.getElementById("count");
+const loader = document.getElementById("loader");
 
 let alumni = [];
 
-/* ---------------- SMART CACHE KEYS ---------------- */
-const CACHE_KEY = "alumni_cache";
-const CACHE_TIME_KEY = "alumni_cache_time";
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-/* ---------------- LOAD ALUMNI ---------------- */
-async function loadAlumni() {
-  const cached = localStorage.getItem(CACHE_KEY);
-  const cacheTime = localStorage.getItem(CACHE_TIME_KEY);
-
-  // ✅ Use cache if valid
-  if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
-    alumni = JSON.parse(cached);
-    render(alumni);
-    return;
-  }
-
-  // 🔄 Fetch from Firestore
-  const snap = await getDocs(collection(db, "alumni"));
-  alumni = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-  // 💾 Save to cache
-  localStorage.setItem(CACHE_KEY, JSON.stringify(alumni));
-  localStorage.setItem(CACHE_TIME_KEY, Date.now());
-
+/* -------- SMART CACHE -------- */
+const cache = localStorage.getItem("alumniCache");
+if (cache) {
+  alumni = JSON.parse(cache);
   render(alumni);
+  loader.style.display = "none";
+} else {
+  loadFromFirestore();
 }
 
-/* ---------------- RENDER ---------------- */
-function render(data) {
-  list.innerHTML = "";
-  data.forEach(a => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
+async function loadFromFirestore() {
+  const snap = await getDocs(collection(db, "alumni"));
+  alumni = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  localStorage.setItem("alumniCache", JSON.stringify(alumni));
+  render(alumni);
+  loader.style.display = "none";
+}
+
+function render(list) {
+  grid.innerHTML = "";
+  countEl.textContent = list.length;
+
+  list.forEach(a => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
       <h3>${a.name || ""}</h3>
-      <p>${a.designation || ""}</p>
-      <p>${a.company || ""}</p>
+      <p>${a.designation || ""} — ${a.company || ""}</p>
+      ${a.batch ? `<span class="badge">${a.batch}</span>` : ""}
     `;
-    div.onclick = () => {
+    card.onclick = () => {
       window.location.href = `alumni-profile.html?id=${a.id}`;
     };
-    list.appendChild(div);
+    grid.appendChild(card);
   });
 }
 
-/* ---------------- SEARCH ---------------- */
 search.addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
   render(alumni.filter(a =>
-    (a.name || "").toLowerCase().includes(q) ||
-    (a.company || "").toLowerCase().includes(q)
+    (a.name||"").toLowerCase().includes(q) ||
+    (a.company||"").toLowerCase().includes(q) ||
+    (a.designation||"").toLowerCase().includes(q)
   ));
 });
-
-loadAlumni();
 </script>
 
 </body>
