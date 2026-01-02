@@ -73,118 +73,114 @@ import {
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+const firebaseConfig = {
+  apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
+  authDomain: "fwd-a5a74.firebaseapp.com",
+  projectId: "fwd-a5a74"
+};
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
-    authDomain: "fwd-a5a74.firebaseapp.com",
-    projectId: "fwd-a5a74"
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const tbody = document.getElementById("alumniTableBody");
+const modal = document.getElementById("modal");
+const form = document.getElementById("alumniForm");
+const modalTitle = document.getElementById("modalTitle");
+
+let editId = null;
+
+/* -------- LOAD ALUMNI -------- */
+async function loadAlumni() {
+  tbody.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "alumni"));
+
+  snapshot.forEach(docSnap => {
+    const a = docSnap.data();
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${a.name || ""}</td>
+      <td>${a.company || ""}</td>
+      <td>${a.designation || ""}</td>
+      <td>
+        <button onclick="editAlumni('${docSnap.id}')">Edit</button>
+        <button onclick="deleteAlumni('${docSnap.id}')">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+loadAlumni();
+
+/* -------- ADD -------- */
+window.openAdd = () => {
+  editId = null;
+  modalTitle.innerText = "Add Alumni";
+  form.reset();
+  modal.style.display = "flex";
+};
+
+/* -------- EDIT (FIXED) -------- */
+window.editAlumni = async (id) => {
+  editId = id;
+  modalTitle.innerText = "Edit Alumni";
+
+  const snap = await getDoc(doc(db, "alumni", id));
+  if (!snap.exists()) return;
+
+  const a = snap.data();
+
+  // ✅ RESTORED PREFILL (THIS WAS THE BUG)
+  form.name.value = a.name || "";
+  form.company.value = a.company || "";
+  form.designation.value = a.designation || "";
+  form.email.value = a.email || "";
+  form.batch.value = a.batch || "";
+  form.branch.value = a.branch || "";
+  form.linkedin.value = a.linkedin || "";
+  form.photourl.value = a.photourl || "";   // ✅ NEW
+  form.about.value = a.about || "";
+
+  modal.style.display = "flex";
+};
+
+/* -------- SAVE -------- */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = {
+    name: form.name.value,
+    company: form.company.value,
+    designation: form.designation.value,
+    email: form.email.value,
+    batch: form.batch.value,
+    branch: form.branch.value,
+    linkedin: form.linkedin.value,
+    photourl: form.photourl.value, // ✅ SAVED
+    about: form.about.value
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const tbody = document.getElementById("alumniTableBody");
-  const modal = document.getElementById("modal");
-  const form = document.getElementById("alumniForm");
-  const modalTitle = document.getElementById("modalTitle");
-
-  let editId = null;
-
-  /* LOAD ALUMNI */
-  async function loadAlumni() {
-    tbody.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "alumni"));
-
-    snapshot.forEach(docSnap => {
-      const a = docSnap.data();
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${a.name || ""}</td>
-        <td>${a.company || ""}</td>
-        <td>${a.designation || ""}</td>
-        <td>
-          <button onclick="editAlumni('${docSnap.id}')">Edit</button>
-          <button onclick="deleteAlumni('${docSnap.id}')">Delete</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
+  if (editId) {
+    await updateDoc(doc(db, "alumni", editId), data);
+  } else {
+    await addDoc(collection(db, "alumni"), data);
   }
 
+  modal.style.display = "none";
+  editId = null;
+  form.reset();
   loadAlumni();
-
-  /* ADD */
-  window.openAdd = () => {
-    editId = null;
-    modalTitle.innerText = "Add Alumni";
-    form.reset();
-    modal.style.display = "flex";
-  };
-
-  /* EDIT — FIXED */
-  window.editAlumni = async (id) => {
-    editId = id;
-    modalTitle.innerText = "Edit Alumni";
-
-    const snap = await getDoc(doc(db, "alumni", id));
-    if (!snap.exists()) return;
-
-    const a = snap.data();
-
-    // ✅ PRE-FILL ALL FIELDS (THIS WAS MISSING)
-    form.name.value = a.name || "";
-    form.company.value = a.company || "";
-    form.designation.value = a.designation || "";
-    form.email.value = a.email || "";
-    form.batch.value = a.batch || "";
-    form.branch.value = a.branch || "";
-    form.linkedin.value = a.linkedin || "";
-    form.photourl.value = a.photourl || "";
-    form.about.value = a.about || "";
-
-    modal.style.display = "flex";
-  };
-
-  /* SAVE */
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const data = {
-      name: form.name.value,
-      company: form.company.value,
-      designation: form.designation.value,
-      email: form.email.value,
-      batch: form.batch.value,
-      branch: form.branch.value,
-      linkedin: form.linkedin.value,
-      photourl: form.photourl.value, // ✅ saved
-      about: form.about.value
-    };
-
-    if (editId) {
-      await updateDoc(doc(db, "alumni", editId), data);
-    } else {
-      await addDoc(collection(db, "alumni"), data);
-    }
-
-    modal.style.display = "none";
-    editId = null;
-    form.reset();
-    loadAlumni();
-  });
-
-  /* DELETE */
-  window.deleteAlumni = async (id) => {
-    if (confirm("Delete this alumni?")) {
-      await deleteDoc(doc(db, "alumni", id));
-      loadAlumni();
-    }
-  };
-
-  window.closeModal = () => modal.style.display = "none";
 });
+
+/* -------- DELETE -------- */
+window.deleteAlumni = async (id) => {
+  if (confirm("Delete this alumni?")) {
+    await deleteDoc(doc(db, "alumni", id));
+    loadAlumni();
+  }
+};
+
+window.closeModal = () => modal.style.display = "none";
 </script>
 
 </body>
