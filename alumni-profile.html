@@ -47,6 +47,7 @@
       margin-bottom: 30px;
     }
 
+    /* Avatar */
     .avatar {
       width: 130px;
       height: 130px;
@@ -58,6 +59,13 @@
       justify-content: center;
       font-size: 3rem;
       font-weight: 700;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     h1 {
@@ -208,6 +216,7 @@
 
 </div>
 
+<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -215,10 +224,7 @@
   const firebaseConfig = {
     apiKey: "AIzaSyBSa1065ebQotb2Gy2YyMCO-7DVl6E7XzE",
     authDomain: "fwd-a5a74.firebaseapp.com",
-    projectId: "fwd-a5a74",
-    storageBucket: "fwd-a5a74.appspot.com",
-    messagingSenderId: "611520933176",
-    appId: "1:611520933176:web:a9bf23eef21d17d4afe5cd"
+    projectId: "fwd-a5a74"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -233,17 +239,17 @@
   }
 
   const cacheKey = `alumni_${alumniId}`;
-  let data = sessionStorage.getItem(cacheKey);
+  let cached = sessionStorage.getItem(cacheKey);
 
-  if (data) {
-    render(JSON.parse(data));
+  if (cached) {
+    render(JSON.parse(cached));
   } else {
     const snap = await getDoc(doc(db, "alumni", alumniId));
     if (!snap.exists()) {
       alert("Alumni not found");
       location.href = "alumni.html";
     }
-    data = snap.data();
+    const data = snap.data();
     sessionStorage.setItem(cacheKey, JSON.stringify(data));
     render(data);
   }
@@ -259,8 +265,18 @@
     document.getElementById("about").textContent = d.about || "—";
     document.getElementById("email").textContent = d.email || "";
 
-    document.getElementById("avatar").textContent =
-      d.name ? d.name.charAt(0).toUpperCase() : "A";
+    const avatar = document.getElementById("avatar");
+
+    // ✅ PHOTO SUPPORT WITH FALLBACK
+    if (d.photoURL) {
+      const img = document.createElement("img");
+      img.src = d.photoURL;
+      img.alt = d.name || "Alumni Photo";
+      avatar.innerHTML = "";
+      avatar.appendChild(img);
+    } else {
+      avatar.textContent = d.name ? d.name.charAt(0).toUpperCase() : "A";
+    }
 
     if (d.email) {
       document.getElementById("emailBtn").href = `mailto:${d.email}`;
