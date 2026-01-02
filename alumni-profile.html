@@ -47,7 +47,6 @@
       margin-bottom: 30px;
     }
 
-    /* Avatar */
     .avatar {
       width: 130px;
       height: 130px;
@@ -66,6 +65,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      border-radius: 50%;
     }
 
     h1 {
@@ -216,7 +216,6 @@
 
 </div>
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -267,13 +266,9 @@
 
     const avatar = document.getElementById("avatar");
 
-    // ✅ PHOTO SUPPORT WITH FALLBACK
-    if (d.photoURL) {
-      const img = document.createElement("img");
-      img.src = d.photoURL;
-      img.alt = d.name || "Alumni Photo";
-      avatar.innerHTML = "";
-      avatar.appendChild(img);
+    // ✅ PHOTO LOGIC (KEY FIX)
+    if (d.photourl) {
+      avatar.innerHTML = `<img src="${d.photourl}" alt="${d.name}">`;
     } else {
       avatar.textContent = d.name ? d.name.charAt(0).toUpperCase() : "A";
     }
