@@ -200,8 +200,8 @@
   </div>
 
   <div class="actions">
-    <a id="emailBtn" class="btn btn-primary" href="#">Send Email</a>
-    <a id="linkedinBtn" class="btn btn-outline" href="#" target="_blank">LinkedIn Profile</a>
+    <a id="emailBtn" class="btn btn-primary" target="_blank">Send Email</a>
+    <a id="linkedinBtn" class="btn btn-outline" target="_blank">LinkedIn Profile</a>
   </div>
 
   <div class="section">
@@ -266,15 +266,16 @@
 
     const avatar = document.getElementById("avatar");
 
-    // ✅ PHOTO LOGIC (KEY FIX)
     if (d.photourl) {
       avatar.innerHTML = `<img src="${d.photourl}" alt="${d.name}">`;
     } else {
       avatar.textContent = d.name ? d.name.charAt(0).toUpperCase() : "A";
     }
 
+    // ✅ GMAIL DRAFT FIX (ONLY CHANGE)
     if (d.email) {
-      document.getElementById("emailBtn").href = `mailto:${d.email}`;
+      document.getElementById("emailBtn").href =
+        `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(d.email)}`;
     } else {
       document.getElementById("emailBtn").style.display = "none";
     }
@@ -289,4 +290,3 @@
 
 </body>
 </html>
-
