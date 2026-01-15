@@ -51,10 +51,6 @@ button:hover {
   box-shadow: 0 6px 16px rgba(0,0,0,.15);
 }
 
-button:active {
-  transform: translateY(0);
-}
-
 .add-btn {
   background: var(--primary);
   color: white;
@@ -127,12 +123,6 @@ tbody tr:hover {
   box-shadow: 0 25px 60px rgba(0,0,0,.25);
 }
 
-.modal-box h3 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  color: var(--primary);
-}
-
 /* ---------- FORM ---------- */
 input, textarea {
   width: 100%;
@@ -140,41 +130,40 @@ input, textarea {
   margin-bottom: 12px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  font-size: .9rem;
-  outline: none;
 }
 
-input:focus, textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(79,70,229,.2);
-}
-
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-actions {
+/* ---------- LOADER ---------- */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(244,246,251,.9);
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
 }
 
-.save-btn {
-  background: var(--primary);
-  color: white;
-  flex: 1;
+.spinner {
+  width: 55px;
+  height: 55px;
+  border: 6px solid #e5e7eb;
+  border-top: 6px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.cancel-btn {
-  background: #e5e7eb;
-  color: #111;
-  flex: 1;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
 </head>
 
 <body>
+
+<!-- 🔄 LOADING OVERLAY -->
+<div id="loader">
+  <div class="spinner"></div>
+</div>
 
 <header>Admin Dashboard – Manage Alumni</header>
 
@@ -207,15 +196,12 @@ textarea {
       <input name="photourl" placeholder="Photo URL" />
       <textarea name="about" placeholder="About"></textarea>
 
-      <div class="form-actions">
-        <button class="save-btn" type="submit">Save</button>
-        <button class="cancel-btn" type="button" onclick="closeModal()">Cancel</button>
-      </div>
+      <button class="add-btn" type="submit">Save</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
     </form>
   </div>
 </div>
 
-<!-- 🔒 FIREBASE LOGIC (UNCHANGED) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -241,12 +227,14 @@ const db = getFirestore(app);
 const tbody = document.getElementById("alumniTableBody");
 const modal = document.getElementById("modal");
 const form = document.getElementById("alumniForm");
-const modalTitle = document.getElementById("modalTitle");
+const loader = document.getElementById("loader");
 
 let editId = null;
 
 async function loadAlumni() {
+  loader.style.display = "flex";   // 🔄 show loader
   tbody.innerHTML = "";
+
   const snapshot = await getDocs(collection(db, "alumni"));
   snapshot.forEach(docSnap => {
     const a = docSnap.data();
@@ -262,19 +250,20 @@ async function loadAlumni() {
     `;
     tbody.appendChild(tr);
   });
+
+  loader.style.display = "none";   // ✅ hide loader
 }
 loadAlumni();
 
+/* --- rest unchanged --- */
 window.openAdd = () => {
   editId = null;
-  modalTitle.innerText = "Add Alumni";
-  form.reset();
   modal.style.display = "flex";
+  form.reset();
 };
 
 window.editAlumni = async (id) => {
   editId = id;
-  modalTitle.innerText = "Edit Alumni";
   const snap = await getDoc(doc(db, "alumni", id));
   if (!snap.exists()) return;
   const a = snap.data();
@@ -292,17 +281,7 @@ window.editAlumni = async (id) => {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const data = {
-    name: form.name.value,
-    company: form.company.value,
-    designation: form.designation.value,
-    email: form.email.value,
-    batch: form.batch.value,
-    branch: form.branch.value,
-    linkedin: form.linkedin.value,
-    photourl: form.photourl.value,
-    about: form.about.value
-  };
+  const data = Object.fromEntries(new FormData(form));
   if (editId) {
     await updateDoc(doc(db, "alumni", editId), data);
   } else {
@@ -310,7 +289,6 @@ form.addEventListener("submit", async (e) => {
   }
   modal.style.display = "none";
   editId = null;
-  form.reset();
   loadAlumni();
 });
 
