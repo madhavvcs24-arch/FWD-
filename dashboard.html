@@ -1,41 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Student Dashboard | Alumni Connect</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
-<style>
-/* ===== DO NOT TOUCH UI ===== */
-:root {
-  --bg:#f6f8fb;--panel:#fff;--primary:#1a2238;
-  --accent:#6366f1;--accent-2:#4f46e5;--muted:#6b7280;
-  --radius:14px;--shadow:0 8px 30px rgba(17,24,39,.06);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Poppins;background:linear-gradient(180deg,var(--bg),#eef2ff)}
-header{background:#fff;position:sticky;top:0;border-bottom:1px solid #eee}
-.header-inner{max-width:1200px;margin:auto;padding:14px 20px;display:flex;justify-content:space-between}
-.brand{display:flex;gap:10px;align-items:center;color:#111;text-decoration:none}
-.brand i{color:var(--accent-2)}
-.btn-header{border:1px solid var(--accent);color:var(--accent);padding:8px 14px;border-radius:10px;text-decoration:none}
-.btn-header:hover{background:var(--accent);color:#fff}
-.wrap{max-width:1200px;margin:28px auto;padding:0 20px}
-.hero{background:linear-gradient(90deg,rgba(99,102,241,.1),rgba(79,70,229,.03));border-radius:16px;padding:28px;box-shadow:var(--shadow)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:30px}
-.card{background:#fff;padding:18px;border-radius:14px;box-shadow:var(--shadow);display:flex;gap:14px;cursor:pointer}
-.card:hover{transform:translateY(-5px)}
-.logo{width:64px;height:64px;border-radius:10px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:700}
-.detail{display:none;margin-top:30px;background:#fff;padding:20px;border-radius:14px;box-shadow:var(--shadow)}
-.detail.active{display:block}
-footer{text-align:center;margin:40px 0;color:#777}
-</style>
-</head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Student Dashboard | Alumni Connect</title>
@@ -152,15 +117,6 @@ footer{text-align:center;margin:40px 0;color:#777}
           <input id="quickSearch" placeholder="Search companies..." />
         </div>
 
-<header>
-  <div class="header-inner">
-    <a class="brand" href="#">
-      <i class="fa-solid fa-graduation-cap"></i>
-      <b>Alumni Connect</b>
-    </a>
-    <div>
-      <a class="btn-header" href="alumni.html">Alumni</a>
-      <a class="btn-header" href="dashboard.html">Dashboard</a>
         <!-- NEW: Companies button links to companies.html (full page) -->
         <a class="btn-header" href="companies.html">Companies</a>
 
@@ -294,124 +250,6 @@ footer{text-align:center;margin:40px 0;color:#777}
       © 2025 Alumni Connect — <a href="index.html">Back to Home</a>
     </footer>
   </div>
-</header>
-
-<div class="wrap">
-
-<div class="hero">
-  <h2>Top Recruiting Companies</h2>
-  <p>Click a company to view placement history and role details</p>
-</div>
-
-<div id="companyGrid" class="grid"></div>
-
-<div id="detailPanel" class="detail">
-  <h3 id="dName"></h3>
-  <p id="dAbout"></p>
-  <p><b>Latest Role:</b> <span id="dRole"></span></p>
-  <p><b>Package:</b> <span id="dPackage"></span></p>
-  <p><b>Batch:</b> <span id="dBatch"></span></p>
-  <p><b>Headquarters:</b> <span id="dHQ"></span></p>
-  <p><b>Industry:</b> <span id="dIndustry"></span></p>
-  <a id="dSite" href="#" target="_blank">Visit Careers Page</a>
-</div>
-
-<footer>© 2025 Alumni Connect</footer>
-</div>
-
-<script>
-/* ===== EXPANDED COMPANY DATA ===== */
-const companies = [
-{
-  id:"google",name:"Google",logo:"G",
-  about:"Google is a global technology leader specializing in search, cloud, AI and consumer software.",
-  role:"Software Engineer",
-  package:"₹25 LPA",
-  batch:"2024",
-  hq:"Mountain View, USA",
-  industry:"Technology",
-  site:"https://careers.google.com"
-},
-{
-  id:"microsoft",name:"Microsoft",logo:"M",
-  about:"Microsoft develops enterprise software, cloud solutions and AI products worldwide.",
-  role:"Software Engineer",
-  package:"₹22 LPA",
-  batch:"2024",
-  hq:"Redmond, USA",
-  industry:"Technology",
-  site:"https://careers.microsoft.com"
-},
-{
-  id:"amazon",name:"Amazon",logo:"A",
-  about:"Amazon focuses on e-commerce, cloud computing (AWS) and AI driven services.",
-  role:"SDE I",
-  package:"₹28 LPA",
-  batch:"2024",
-  hq:"Seattle, USA",
-  industry:"E-Commerce / Cloud",
-  site:"https://www.amazon.jobs"
-},
-{
-  id:"infosys",name:"Infosys",logo:"I",
-  about:"Infosys provides IT consulting and digital transformation services globally.",
-  role:"Associate Developer",
-  package:"₹7.5 LPA",
-  batch:"2024",
-  hq:"Bengaluru, India",
-  industry:"IT Services",
-  site:"https://www.infosys.com/careers"
-},
-{
-  id:"goldman",name:"Goldman Sachs",logo:"GS",
-  about:"Goldman Sachs is a leading global investment banking and financial services firm.",
-  role:"Analyst",
-  package:"₹28 LPA",
-  batch:"2024",
-  hq:"New York, USA",
-  industry:"Finance",
-  site:"https://www.goldmansachs.com/careers"
-},
-{
-  id:"tcs",name:"TCS",logo:"T",
-  about:"TCS is India’s largest IT services and consulting company.",
-  role:"Systems Engineer",
-  package:"₹8 LPA",
-  batch:"2024",
-  hq:"Mumbai, India",
-  industry:"IT Services",
-  site:"https://www.tcs.com/careers"
-}
-];
-
-/* ===== RENDER ===== */
-const grid = document.getElementById("companyGrid");
-companies.forEach(c=>{
-  const div=document.createElement("div");
-  div.className="card";
-  div.innerHTML=`
-    <div class="logo">${c.logo}</div>
-    <div>
-      <h4>${c.name}</h4>
-      <p>${c.role} — ${c.package}</p>
-    </div>`;
-  div.onclick=()=>openDetail(c);
-  grid.appendChild(div);
-});
-
-function openDetail(c){
-  document.getElementById("dName").textContent=c.name;
-  document.getElementById("dAbout").textContent=c.about;
-  document.getElementById("dRole").textContent=c.role;
-  document.getElementById("dPackage").textContent=c.package;
-  document.getElementById("dBatch").textContent=c.batch;
-  document.getElementById("dHQ").textContent=c.hq;
-  document.getElementById("dIndustry").textContent=c.industry;
-  document.getElementById("dSite").href=c.site;
-  document.getElementById("detailPanel").classList.add("active");
-  document.getElementById("detailPanel").scrollIntoView({behavior:"smooth"});
-}
-</script>
 
   <script>
     // Demo company data; replace with real API calls later
