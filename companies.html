@@ -45,7 +45,9 @@
 <body>
 <header>
   <div class="header-inner">
-    <a class="brand" href="dashboard.html"><i class="fa-solid fa-graduation-cap"></i> Alumni Connect</a>
+    <a class="brand" href="dashboard.html">
+      <i class="fa-solid fa-graduation-cap"></i> Alumni Connect
+    </a>
     <div class="header-actions">
       <a class="btn-ghost" href="dashboard.html">Dashboard</a>
       <a class="btn-primary" href="index.html">Home</a>
@@ -57,7 +59,9 @@
   <div class="hero">
     <div>
       <h1 style="margin:0">Companies</h1>
-      <p style="margin:6px 0;color:var(--muted)">Browse companies and view their latest campus placements.</p>
+      <p style="margin:6px 0;color:var(--muted)">
+        Browse recruiting companies and review their campus placement history.
+      </p>
     </div>
     <small style="color:var(--muted)">Click a company card to view details</small>
   </div>
@@ -81,49 +85,60 @@
 
 <script>
 const companiesList = [
-  { id:'google', name:'Google', about:'Global technology company focused on AI, search, and cloud.',
-    latest:{ role:'Software Engineer', package:'₹25 LPA', batch:'2024', details:'Search, Android & Cloud teams.' },
-    years:['2024','2023','2021'], website:'https://careers.google.com' },
-
-  { id:'microsoft', name:'Microsoft', about:'Developer of Windows, Azure and enterprise solutions.',
-    latest:{ role:'Software Engineer', package:'₹22 LPA', batch:'2024', details:'Azure & Office teams.' },
-    years:['2024','2023','2022'], website:'https://careers.microsoft.com' },
-
-  { id:'amazon', name:'Amazon', about:'E-commerce and cloud computing giant.',
-    latest:{ role:'SDE-I', package:'₹20 LPA', batch:'2024', details:'AWS and retail platforms.' },
-    years:['2024','2023','2022'], website:'https://www.amazon.jobs' },
-
-  { id:'meta', name:'Meta', about:'Company behind Facebook, Instagram, WhatsApp.',
-    latest:{ role:'Software Engineer', package:'₹26 LPA', batch:'2024', details:'Product engineering roles.' },
-    years:['2024','2023'], website:'https://www.metacareers.com' },
-
-  { id:'goldman', name:'Goldman Sachs', about:'Global investment banking firm.',
-    latest:{ role:'Analyst', package:'₹28 LPA', batch:'2024', details:'Technology & finance roles.' },
-    years:['2024','2023'], website:'https://www.goldmansachs.com' },
-
-  { id:'flipkart', name:'Flipkart', about:'Indian e-commerce marketplace.',
-    latest:{ role:'SDE', package:'₹18 LPA', batch:'2024', details:'Platform & logistics systems.' },
-    years:['2024','2023','2022'], website:'https://www.flipkartcareers.com' },
-
-  { id:'tcs', name:'Tata Consultancy Services', about:'Global IT services and consulting company.',
-    latest:{ role:'Systems Engineer', package:'₹8 LPA', batch:'2024', details:'Enterprise projects.' },
-    years:['2024','2023','2022','2021'], website:'https://www.tcs.com' },
-
-  { id:'infosys', name:'Infosys', about:'Digital transformation and consulting leader.',
-    latest:{ role:'Associate Developer', package:'₹7.5 LPA', batch:'2024', details:'Application development roles.' },
-    years:['2024','2023','2022'], website:'https://www.infosys.com' },
-
-  { id:'wipro', name:'Wipro', about:'IT services and consulting company.',
-    latest:{ role:'Project Engineer', package:'₹6.5 LPA', batch:'2024', details:'Support and development roles.' },
-    years:['2024','2023','2022'], website:'https://careers.wipro.com' },
-
-  { id:'accenture', name:'Accenture', about:'Global professional services company.',
-    latest:{ role:'ASE', package:'₹6 LPA', batch:'2024', details:'Full-stack & enterprise roles.' },
-    years:['2024','2023','2022'], website:'https://www.accenture.com/careers' },
-
-  { id:'salesforce', name:'Salesforce', about:'CRM and cloud enterprise solutions.',
-    latest:{ role:'Cloud Specialist', package:'₹18 LPA', batch:'2023', details:'Cloud & DevOps roles.' },
-    years:['2023','2022'], website:'https://www.salesforce.com' }
+  {
+    name:'Google',
+    industry:'Technology & Cloud Services',
+    hq:'Mountain View, USA',
+    about:'Google is a multinational technology company specializing in internet services, cloud computing, artificial intelligence, and software innovation.',
+    latest:{ role:'Software Engineer', package:'₹25 LPA', batch:'2024', details:'Roles in Search, Android, Cloud, and AI teams.', hiring:'FTE', process:'Online test, technical interviews, system design' },
+    years:['2024','2023','2021'],
+    website:'https://careers.google.com'
+  },
+  {
+    name:'Microsoft',
+    industry:'Enterprise Software & Cloud',
+    hq:'Redmond, USA',
+    about:'Microsoft develops enterprise software, cloud platforms, and AI-based solutions used globally.',
+    latest:{ role:'Software Engineer', package:'₹22 LPA', batch:'2024', details:'Azure, Office, and Security engineering roles.', hiring:'FTE', process:'Coding round, technical interviews, HR' },
+    years:['2024','2023','2022'],
+    website:'https://careers.microsoft.com'
+  },
+  {
+    name:'Amazon',
+    industry:'E-Commerce & Cloud',
+    hq:'Seattle, USA',
+    about:'Amazon is a global leader in e-commerce and cloud computing through AWS.',
+    latest:{ role:'SDE-I', package:'₹20 LPA', batch:'2024', details:'Backend and distributed systems development.', hiring:'FTE', process:'Online assessment, DSA rounds, leadership principles' },
+    years:['2024','2023','2022'],
+    website:'https://www.amazon.jobs'
+  },
+  {
+    name:'Goldman Sachs',
+    industry:'Investment Banking & Finance',
+    hq:'New York, USA',
+    about:'Goldman Sachs is a leading global investment banking and financial services firm.',
+    latest:{ role:'Analyst', package:'₹28 LPA', batch:'2024', details:'Technology-driven financial systems development.', hiring:'FTE', process:'Aptitude, technical, managerial interviews' },
+    years:['2024','2023'],
+    website:'https://www.goldmansachs.com'
+  },
+  {
+    name:'Tata Consultancy Services',
+    industry:'IT Services & Consulting',
+    hq:'Mumbai, India',
+    about:'TCS is India’s largest IT services company providing consulting and digital transformation solutions.',
+    latest:{ role:'Systems Engineer', package:'₹8 LPA', batch:'2024', details:'Enterprise application and infrastructure roles.', hiring:'FTE', process:'Online test, technical interview, HR round' },
+    years:['2024','2023','2022','2021'],
+    website:'https://www.tcs.com'
+  },
+  {
+    name:'Infosys',
+    industry:'IT Consulting & Digital Services',
+    hq:'Bengaluru, India',
+    about:'Infosys offers next-generation digital services including cloud, analytics, and application development.',
+    latest:{ role:'Associate Developer', package:'₹7.5 LPA', batch:'2024', details:'Digital transformation and development projects.', hiring:'FTE', process:'Online test, technical interview, HR discussion' },
+    years:['2024','2023','2022'],
+    website:'https://www.infosys.com'
+  }
 ];
 
 const grid=document.getElementById('grid');
@@ -153,10 +168,14 @@ function showDetail(c){
   detail.innerHTML=`
     <h3>${c.name}</h3>
     <p style="color:var(--muted)">${c.about}</p>
-    <strong>${c.latest.role} — ${c.latest.package}</strong>
+    <p><strong>Industry:</strong> ${c.industry}</p>
+    <p><strong>Headquarters:</strong> ${c.hq}</p>
+    <p><strong>${c.latest.role}</strong> — ${c.latest.package}</p>
     <p style="color:var(--muted)">${c.latest.details}</p>
-    <p><strong>Years visited:</strong> ${c.years.join(', ')}</p>
-    <a class="btn-ghost" href="${c.website}" target="_blank">Visit Website</a>`;
+    <p><strong>Hiring Type:</strong> ${c.latest.hiring}</p>
+    <p><strong>Selection Process:</strong> ${c.latest.process}</p>
+    <p><strong>Years Visited:</strong> ${c.years.join(', ')}</p>
+    <a class="btn-ghost" href="${c.website}" target="_blank">Visit Careers Page</a>`;
   detail.style.display='block';
 }
 
@@ -169,7 +188,12 @@ function applyFilters(){
   ));
 }
 
-function resetFilters(){search.value='';filterYear.value='';applyFilters();detail.style.display='none';}
+function resetFilters(){
+  search.value='';
+  filterYear.value='';
+  applyFilters();
+  detail.style.display='none';
+}
 
 search.oninput=applyFilters;
 filterYear.onchange=applyFilters;
