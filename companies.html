@@ -12,153 +12,169 @@
 
   <style>
     :root {
-      --bg: #f6f8fb;
-      --panel: #ffffff;
-      --primary: #1a2238;
-      --accent: #6366f1;
-      --accent-2: #4f46e5;
-      --muted: #6b7280;
-      --card-radius: 12px;
-      --shadow: 0 12px 40px rgba(17,24,39,0.06);
+      --bg:#f6f8fb;--panel:#ffffff;--primary:#1a2238;
+      --accent:#6366f1;--accent-2:#4f46e5;--muted:#6b7280;
+      --card-radius:12px;--shadow:0 12px 40px rgba(17,24,39,0.06);
     }
     *{box-sizing:border-box}
-    body{ font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; background:linear-gradient(180deg,var(--bg),#eef2ff 140%); color:var(--primary) }
-    header{ background:var(--panel); border-bottom:1px solid rgba(17,24,39,0.06); position:sticky; top:0; z-index:200; }
-    .header-inner{ max-width:1200px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center }
-    .brand{ display:flex; gap:10px; align-items:center; color:var(--primary); text-decoration:none }
-    .header-actions{ display:flex; gap:8px; }
-    .btn-ghost{ background:transparent; border:1px solid rgba(17,24,39,0.06); padding:8px 12px; border-radius:8px; cursor:pointer }
-    .btn-primary{ background:var(--accent); color:#fff; padding:8px 12px; border-radius:8px; border:0; cursor:pointer }
+    body{font-family:Poppins;margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff 140%);color:var(--primary)}
+    header{background:var(--panel);border-bottom:1px solid rgba(17,24,39,.06);position:sticky;top:0;z-index:200}
+    .header-inner{max-width:1200px;margin:auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--primary)}
+    .header-actions{display:flex;gap:8px}
+    .btn-ghost{background:transparent;border:1px solid rgba(17,24,39,.06);padding:8px 12px;border-radius:8px;cursor:pointer}
+    .btn-primary{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
 
-    .wrap{ max-width:1200px; margin:28px auto; padding:0 20px; }
-    .hero{ padding:20px; border-radius:12px; background:linear-gradient(90deg, rgba(99,102,241,0.06), rgba(79,70,229,0.01)); box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center }
-    .controls{ margin-top:18px; display:flex; gap:12px; flex-wrap:wrap }
-    .controls input, .controls select { padding:10px 12px; border-radius:10px; border:1px solid rgba(17,24,39,0.06); min-width:200px }
+    .wrap{max-width:1200px;margin:28px auto;padding:0 20px}
+    .hero{padding:20px;border-radius:12px;background:linear-gradient(90deg,rgba(99,102,241,.06),rgba(79,70,229,.01));box-shadow:var(--shadow);display:flex;justify-content:space-between}
+    .controls{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+    .controls input,.controls select{padding:10px 12px;border-radius:10px;border:1px solid rgba(17,24,39,.06);min-width:200px}
 
-    .grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:18px; margin-top:22px }
-    .company-card{ background:var(--panel); border-radius:12px; padding:16px; box-shadow:var(--shadow); cursor:pointer; transition:transform .15s ease }
-    .company-card:hover{ transform:translateY(-6px) }
-    .logo{ width:60px; height:60px; border-radius:10px; background:#f3f3f8; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--muted) }
-    .company-name{ font-weight:600; margin-top:8px; color:var(--primary) }
-    .company-meta{ color:var(--muted); margin-top:6px; font-size:0.95rem }
-    .detail-panel{ margin-top:22px; background:var(--panel); padding:18px; border-radius:12px; box-shadow:var(--shadow); display:none }
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:22px}
+    .company-card{background:var(--panel);border-radius:12px;padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s}
+    .company-card:hover{transform:translateY(-6px)}
+    .logo{width:60px;height:60px;border-radius:10px;background:#f3f3f8;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+    .company-name{font-weight:600;margin-top:8px}
+    .company-meta{color:var(--muted);margin-top:6px;font-size:.95rem}
+    .detail-panel{margin-top:22px;background:var(--panel);padding:18px;border-radius:12px;box-shadow:var(--shadow);display:none}
 
-    footer{ margin:36px 0 80px 0; text-align:center; color:var(--muted) }
-    @media(max-width:600px){ .controls input{ min-width:140px } }
+    footer{margin:36px 0 80px;text-align:center;color:var(--muted)}
   </style>
 </head>
+
 <body>
-  <header>
-    <div class="header-inner">
-      <a class="brand" href="dashboard.html"><i class="fa-solid fa-graduation-cap"></i> Alumni Connect</a>
-      <div class="header-actions">
-        <a class="btn-ghost" href="dashboard.html">Dashboard</a>
-        <a class="btn-primary" href="index.html">Home</a>
-      </div>
+<header>
+  <div class="header-inner">
+    <a class="brand" href="dashboard.html"><i class="fa-solid fa-graduation-cap"></i> Alumni Connect</a>
+    <div class="header-actions">
+      <a class="btn-ghost" href="dashboard.html">Dashboard</a>
+      <a class="btn-primary" href="index.html">Home</a>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main class="wrap">
-    <div class="hero">
-      <div>
-        <h1 style="margin:0">Companies</h1>
-        <p style="margin:6px 0 0 0; color:var(--muted)">Browse companies and view their latest campus placements.</p>
-      </div>
-      <div style="text-align:right; color:var(--muted)"><small>Click a company card to view details</small></div>
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <h1 style="margin:0">Companies</h1>
+      <p style="margin:6px 0;color:var(--muted)">Browse companies and view their latest campus placements.</p>
     </div>
+    <small style="color:var(--muted)">Click a company card to view details</small>
+  </div>
 
-    <div class="controls">
-      <input id="search" placeholder="Search by company or year..." />
-      <select id="filterYear"><option value="">All years</option><option>2024</option><option>2023</option><option>2022</option></select>
-      <button class="btn-ghost" onclick="resetFilters()">Reset</button>
-    </div>
+  <div class="controls">
+    <input id="search" placeholder="Search by company or role..." />
+    <select id="filterYear">
+      <option value="">All years</option>
+      <option>2024</option>
+      <option>2023</option>
+      <option>2022</option>
+    </select>
+    <button class="btn-ghost" onclick="resetFilters()">Reset</button>
+  </div>
 
-    <section id="grid" class="grid" aria-live="polite">
-      <!-- populated by JS -->
-    </section>
+  <section id="grid" class="grid"></section>
+  <div id="detail" class="detail-panel"></div>
 
-    <div id="detail" class="detail-panel" aria-hidden="true"></div>
+  <footer>© 2025 Alumni Connect</footer>
+</main>
 
-    <footer>© 2025 Alumni Connect — <a href="index.html">College Home</a></footer>
-  </main>
+<script>
+const companiesList = [
+  { id:'google', name:'Google', about:'Global technology company focused on AI, search, and cloud.',
+    latest:{ role:'Software Engineer', package:'₹25 LPA', batch:'2024', details:'Search, Android & Cloud teams.' },
+    years:['2024','2023','2021'], website:'https://careers.google.com' },
 
-  <script>
-    // same demo data used earlier for consistency
-    const companiesList = [
-      { id:'google', name:'Google', about:'Google is a global technology company...', latest:{ role:'Software Engineer', package:'₹25 LPA', batch:'2024', details:'SWE roles across Search & Cloud.' }, years:['2024','2023','2021'], website:'https://careers.google.com' },
-      { id:'microsoft', name:'Microsoft', about:'Microsoft develops, licenses, and supports software...', latest:{ role:'Software Engineer', package:'₹22 LPA', batch:'2024', details:'Azure & Office teams.' }, years:['2024','2023','2022'], website:'https://careers.microsoft.com' },
-      { id:'salesforce', name:'Salesforce', about:'Salesforce provides CRM and cloud solutions...', latest:{ role:'Cloud Specialist', package:'₹18 LPA', batch:'2023', details:'Cloud & customer success roles.' }, years:['2023','2022'], website:'https://www.salesforce.com' },
-      { id:'tcs', name:'Tata Consultancy Services', about:'TCS is a global IT services and consulting firm...', latest:{ role:'Systems Engineer', package:'₹8 LPA', batch:'2024', details:'Services projects across domains.' }, years:['2024','2023','2022','2021'], website:'https://www.tcs.com' },
-      { id:'infosys', name:'Infosys', about:'Infosys is a leader in digital services...', latest:{ role:'Associate Developer', package:'₹7.5 LPA', batch:'2024', details:'Developer roles in transformation projects.' }, years:['2024','2023','2022'], website:'https://www.infosys.com' },
-      { id:'goldman', name:'Goldman Sachs', about:'Goldman Sachs is a leading investment bank...', latest:{ role:'Analyst', package:'₹28 LPA', batch:'2024', details:'Front-office analyst roles.' }, years:['2024','2023'], website:'https://www.goldmansachs.com' }
-    ];
+  { id:'microsoft', name:'Microsoft', about:'Developer of Windows, Azure and enterprise solutions.',
+    latest:{ role:'Software Engineer', package:'₹22 LPA', batch:'2024', details:'Azure & Office teams.' },
+    years:['2024','2023','2022'], website:'https://careers.microsoft.com' },
 
-    const grid = document.getElementById('grid');
-    const detail = document.getElementById('detail');
-    const search = document.getElementById('search');
-    const filterYear = document.getElementById('filterYear');
+  { id:'amazon', name:'Amazon', about:'E-commerce and cloud computing giant.',
+    latest:{ role:'SDE-I', package:'₹20 LPA', batch:'2024', details:'AWS and retail platforms.' },
+    years:['2024','2023','2022'], website:'https://www.amazon.jobs' },
 
-    function renderList(list){
-      grid.innerHTML = '';
-      list.forEach(c=>{
-        const el = document.createElement('article');
-        el.className = 'company-card';
-        el.dataset.id = c.id;
-        el.innerHTML = `
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="logo">${c.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
-            <div>
-              <div class="company-name">${c.name}</div>
-              <div class="company-meta"><strong>Latest:</strong> ${c.latest.role} · <span style="color:var(--muted)">${c.latest.package} (${c.latest.batch})</span></div>
-            </div>
-          </div>
-        `;
-        el.addEventListener('click', ()=> showDetail(c.id));
-        grid.appendChild(el);
-      });
-    }
+  { id:'meta', name:'Meta', about:'Company behind Facebook, Instagram, WhatsApp.',
+    latest:{ role:'Software Engineer', package:'₹26 LPA', batch:'2024', details:'Product engineering roles.' },
+    years:['2024','2023'], website:'https://www.metacareers.com' },
 
-    function showDetail(id){
-      const c = companiesList.find(x=>x.id===id);
-      if(!c) return;
-      detail.innerHTML = `
-        <h3 style="margin-top:0">${c.name}</h3>
-        <p style="color:var(--muted)">${c.about}</p>
-        <h4 style="margin-top:12px">Latest Placement</h4>
-        <div style="background:#fff; padding:12px; border-radius:8px; box-shadow:0 8px 30px rgba(17,24,39,0.04)">
-          <strong>${c.latest.role} — ${c.latest.package}</strong>
-          <div style="color:var(--muted); margin-top:6px">${c.latest.details} (Batch: ${c.latest.batch})</div>
+  { id:'goldman', name:'Goldman Sachs', about:'Global investment banking firm.',
+    latest:{ role:'Analyst', package:'₹28 LPA', batch:'2024', details:'Technology & finance roles.' },
+    years:['2024','2023'], website:'https://www.goldmansachs.com' },
+
+  { id:'flipkart', name:'Flipkart', about:'Indian e-commerce marketplace.',
+    latest:{ role:'SDE', package:'₹18 LPA', batch:'2024', details:'Platform & logistics systems.' },
+    years:['2024','2023','2022'], website:'https://www.flipkartcareers.com' },
+
+  { id:'tcs', name:'Tata Consultancy Services', about:'Global IT services and consulting company.',
+    latest:{ role:'Systems Engineer', package:'₹8 LPA', batch:'2024', details:'Enterprise projects.' },
+    years:['2024','2023','2022','2021'], website:'https://www.tcs.com' },
+
+  { id:'infosys', name:'Infosys', about:'Digital transformation and consulting leader.',
+    latest:{ role:'Associate Developer', package:'₹7.5 LPA', batch:'2024', details:'Application development roles.' },
+    years:['2024','2023','2022'], website:'https://www.infosys.com' },
+
+  { id:'wipro', name:'Wipro', about:'IT services and consulting company.',
+    latest:{ role:'Project Engineer', package:'₹6.5 LPA', batch:'2024', details:'Support and development roles.' },
+    years:['2024','2023','2022'], website:'https://careers.wipro.com' },
+
+  { id:'accenture', name:'Accenture', about:'Global professional services company.',
+    latest:{ role:'ASE', package:'₹6 LPA', batch:'2024', details:'Full-stack & enterprise roles.' },
+    years:['2024','2023','2022'], website:'https://www.accenture.com/careers' },
+
+  { id:'salesforce', name:'Salesforce', about:'CRM and cloud enterprise solutions.',
+    latest:{ role:'Cloud Specialist', package:'₹18 LPA', batch:'2023', details:'Cloud & DevOps roles.' },
+    years:['2023','2022'], website:'https://www.salesforce.com' }
+];
+
+const grid=document.getElementById('grid');
+const detail=document.getElementById('detail');
+const search=document.getElementById('search');
+const filterYear=document.getElementById('filterYear');
+
+function renderList(list){
+  grid.innerHTML='';
+  list.forEach(c=>{
+    const el=document.createElement('article');
+    el.className='company-card';
+    el.innerHTML=`
+      <div style="display:flex;gap:12px">
+        <div class="logo">${c.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+        <div>
+          <div class="company-name">${c.name}</div>
+          <div class="company-meta"><strong>${c.latest.role}</strong> · ${c.latest.package} (${c.latest.batch})</div>
         </div>
-        <div style="margin-top:12px; color:var(--muted)"><strong>Years visited:</strong> ${c.years.join(', ')}</div>
-        <div style="margin-top:12px"><a class="btn-ghost" href="${c.website}" target="_blank">Visit website</a></div>
-      `;
-      detail.style.display = 'block';
-      detail.setAttribute('aria-hidden','false');
-      detail.scrollIntoView({behavior:'smooth'});
-    }
+      </div>`;
+    el.onclick=()=>showDetail(c);
+    grid.appendChild(el);
+  });
+}
 
-    function applyFilters(){
-      const q = (search.value || '').trim().toLowerCase();
-      const year = filterYear.value;
-      const filtered = companiesList.filter(c=>{
-        const matchesQ = !q || c.name.toLowerCase().includes(q) || c.latest.role.toLowerCase().includes(q);
-        const matchesYear = !year || c.years.includes(year);
-        return matchesQ && matchesYear;
-      });
-      renderList(filtered);
-    }
+function showDetail(c){
+  detail.innerHTML=`
+    <h3>${c.name}</h3>
+    <p style="color:var(--muted)">${c.about}</p>
+    <strong>${c.latest.role} — ${c.latest.package}</strong>
+    <p style="color:var(--muted)">${c.latest.details}</p>
+    <p><strong>Years visited:</strong> ${c.years.join(', ')}</p>
+    <a class="btn-ghost" href="${c.website}" target="_blank">Visit Website</a>`;
+  detail.style.display='block';
+}
 
-    function resetFilters(){
-      search.value=''; filterYear.value=''; applyFilters();
-      detail.style.display='none';
-    }
+function applyFilters(){
+  const q=search.value.toLowerCase();
+  const y=filterYear.value;
+  renderList(companiesList.filter(c=>
+    (!q||c.name.toLowerCase().includes(q)||c.latest.role.toLowerCase().includes(q)) &&
+    (!y||c.years.includes(y))
+  ));
+}
 
-    // events
-    search.addEventListener('input', applyFilters);
-    filterYear.addEventListener('change', applyFilters);
+function resetFilters(){search.value='';filterYear.value='';applyFilters();detail.style.display='none';}
 
-    // initial render
-    renderList(companiesList);
-  </script>
+search.oninput=applyFilters;
+filterYear.onchange=applyFilters;
+
+renderList(companiesList);
+</script>
 </body>
 </html>
